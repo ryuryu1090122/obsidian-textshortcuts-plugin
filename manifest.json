@@ -1,0 +1,11 @@
+{
+	"id": "mathtools-plugin",
+	"name": "Math tools Plugin",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "An Obsidian plugin",
+	"author": "Loquat",
+	"authorUrl": "",
+	"fundingUrl": "",
+	"isDesktopOnly": false
+}
