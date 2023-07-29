@@ -11,6 +11,10 @@
   "keywords": [],
   "author": "Loquat",
   "license": "MIT",
+
+  "devDependencies": {
+  },
+
   "dependencies": {
     "@types/node": "^16.11.6",
     "@typescript-eslint/eslint-plugin": "5.29.0",
