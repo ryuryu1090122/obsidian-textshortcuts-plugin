@@ -16,9 +16,13 @@ import {
 import {} from '@codemirror/state'
 import {} from '@codemirror/view'
 
+
 import {MathCommandsSettings} from "./types"
 
 const DEFAULT_SETTINGS: MathCommandsSettings = {
+	enableAutoLinebreakMathBlock: true,
+	enableAutoLineBreakEquation: true,
+
 	enableAddMathBlockCommand: true,
 	enableAddEquationBlockCommand: true,
 	enableAddAlignBlockCommand: true,
@@ -27,6 +31,7 @@ const DEFAULT_SETTINGS: MathCommandsSettings = {
 }
 
 export default class MathCommandsPlugin extends Plugin {
+	app: App;
 	settings: MathCommandsSettings;
 
 	async onload() {
@@ -39,8 +44,7 @@ export default class MathCommandsPlugin extends Plugin {
 				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
 					if (this.settings.enableAddMathBlockCommand) {
 						if (!checking) {
-	
-							editorEditorField
+							this.addBracket(editor, "$$", "$$");
 						}
 						return true;
 					}
@@ -53,7 +57,7 @@ export default class MathCommandsPlugin extends Plugin {
 				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
 					if (this.settings.enableAddEquationBlockCommand) {
 						if (!checking) {
-	
+							this.addBracket(editor, "\\start{equation}", "\\end{equation}")
 						}
 						return true;
 					}
@@ -102,17 +106,7 @@ export default class MathCommandsPlugin extends Plugin {
 
 		this.addCommands(commands)
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new MathCommandsSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
 	onunload() {
@@ -132,21 +126,31 @@ export default class MathCommandsPlugin extends Plugin {
 			this.addCommand(commands[i])
 		}
 	}
-}
 
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
+	private addBracket(editor: Editor, bra: string, ket: string, mode?: "linebreak"): void {
+		let from = editor.getCursor("from");
+		let to = editor.getCursor("to");
 
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
+		switch (mode) {
+			case "linebreak":
+				editor.replaceRange("\\n" + ket + "\\n", to);
+				editor.replaceRange("\\n" + bra + "\\n", from);
+				if (from == to) {
+					editor.setCursor(from.line + 2, 0);
+				} else {
+					editor.setCursor(to.line + 3, ket.length);
+				}
+				break;
 
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
+			default:
+				editor.replaceRange(ket, to);
+				editor.replaceRange(bra, from);
+				if (from == to) {
+					editor.setCursor(from.line, from.ch + bra.length);
+				} else {
+					editor.setCursor(to.line, to.ch + ket.length);
+				}
+		}
 	}
 }
 
