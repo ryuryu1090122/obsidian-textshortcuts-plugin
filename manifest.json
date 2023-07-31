@@ -1,11 +1,11 @@
 {
-	"id": "mathtools-plugin",
-	"name": "Math tools Plugin",
+	"id": "mathcommands-plugin",
+	"name": "Math Commands Plugin",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "An Obsidian plugin",
+	"description": "An Obsidian plugin that provides shortcut commands for typing LateX and MathJax",
 	"author": "Loquat",
-	"authorUrl": "",
+	"authorUrl": "https://github.com/ryuryu1090122/obsidian-mathcommands-plugin",
 	"fundingUrl": "",
 	"isDesktopOnly": false
 }

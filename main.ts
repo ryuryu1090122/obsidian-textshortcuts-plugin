@@ -9,21 +9,16 @@ import {
 	Plugin, 
 	PluginSettingTab,
 	Setting,
-	editorEditorField
+	editorEditorField,
+	Command
 } from 'obsidian';
 
 import {} from '@codemirror/state'
 import {} from '@codemirror/view'
 
-interface MathToolsSettings {
-	enableAddMathBlockCommand: boolean;
-	enableAddEquationBlockCommand: boolean;
-	enableAddAlignBlockCommand: boolean;
-	enableAddParenthesesCommand: boolean;
-	enableAddFracCommand: boolean;
-}
+import {MathCommandsSettings} from "./types"
 
-const DEFAULT_SETTINGS: MathToolsSettings = {
+const DEFAULT_SETTINGS: MathCommandsSettings = {
 	enableAddMathBlockCommand: true,
 	enableAddEquationBlockCommand: true,
 	enableAddAlignBlockCommand: true,
@@ -31,82 +26,84 @@ const DEFAULT_SETTINGS: MathToolsSettings = {
 	enableAddFracCommand: true
 }
 
-export default class MathToolsPlugin extends Plugin {
-	settings: MathToolsSettings;
+export default class MathCommandsPlugin extends Plugin {
+	settings: MathCommandsSettings;
 
 	async onload() {
 		await this.loadSettings();
 		
-
-		// incert $$ $$
-		this.addCommand({
-			id: 'add-math-block',
-			name: 'Add math block',
-			editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
-				if (this.settings.enableAddMathBlockCommand) {
-					if (!checking) {
-
-						editorEditorField
+		let commands: Command[] = [
+			{
+				id: 'add-math-block',
+				name: 'Add math block',
+				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
+					if (this.settings.enableAddMathBlockCommand) {
+						if (!checking) {
+	
+							editorEditorField
+						}
+						return true;
 					}
-					return true;
+				}
+			},
+
+			{
+				id: 'add-equation-block',
+				name: 'Add equation block',
+				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
+					if (this.settings.enableAddEquationBlockCommand) {
+						if (!checking) {
+	
+						}
+						return true;
+					}
+				}
+			},
+
+			{
+				id: 'add-align-block',
+				name: 'Add multiple equations block',
+				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
+					if (this.settings.enableAddAlignBlockCommand) {
+						if (!checking) {
+	
+						}
+						return true;
+					}
+				}
+			},
+
+			{
+				id: 'add-parentheses-block',
+				name: 'Add parentheses block',
+				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
+					if (this.settings.enableAddParenthesesCommand) {
+						if (!checking) {
+	
+						}
+						return true;
+					}
+				}
+			},
+
+			{
+				id: 'add-frac',
+				name: 'Add frac',
+				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
+					if (this.settings.enableAddFracCommand) {
+						if (!checking) {
+	
+						}
+						return true;
+					}
 				}
 			}
-		});
+		]
 
-		this.addCommand({
-			id: 'add-equation-block',
-			name: 'Add equation block',
-			editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
-				if (this.settings.enableAddEquationBlockCommand) {
-					if (!checking) {
-
-					}
-					return true;
-				}
-			}
-		});
-
-		this.addCommand({
-			id: 'add-align-block',
-			name: 'Add multiple equations block',
-			editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
-				if (this.settings.enableAddAlignBlockCommand) {
-					if (!checking) {
-
-					}
-					return true;
-				}
-			}
-		});
-
-		this.addCommand({
-			id: 'add-parentheses-block',
-			name: 'Add parentheses block',
-			editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
-				if (this.settings.enableAddParenthesesCommand) {
-					if (!checking) {
-
-					}
-					return true;
-				}
-			}
-		});
-
-		this.addCommand({
-			id: 'add-frac',
-			name: 'Add frac',
-			editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
-				if (this.settings.enableAddFracCommand) {
-					if (!checking) {
-
-					}
-					return true;
-				}
-			}
-		});
+		this.addCommands(commands)
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new MathToolsSettingTab(this.app, this));
+		this.addSettingTab(new MathCommandsSettingTab(this.app, this));
 
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
@@ -129,6 +126,12 @@ export default class MathToolsPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+
+	private addCommands(commands: Command[]): void {
+		for (let i = 0; i < commands.length; i++) {
+			this.addCommand(commands[i])
+		}
+	}
 }
 
 class SampleModal extends Modal {
@@ -147,10 +150,10 @@ class SampleModal extends Modal {
 	}
 }
 
-class MathToolsSettingTab extends PluginSettingTab {
-	plugin: MathToolsPlugin;
+class MathCommandsSettingTab extends PluginSettingTab {
+	plugin: MathCommandsPlugin;
 
-	constructor(app: App, plugin: MathToolsPlugin) {
+	constructor(app: App, plugin: MathCommandsPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -159,7 +162,7 @@ class MathToolsSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
 		containerEl.empty();
 
-		containerEl.createEl('h2', { text: 'Math tools for Obsidian - Settings' });
+		containerEl.createEl('h2', { text: 'Math Commands for Obsidian - Settings' });
 
 		new Setting(containerEl)
 			.setName('$$ ... $$')

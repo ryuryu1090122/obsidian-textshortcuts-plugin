@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-mathtools-plugin",
+  "name": "obsidian-mathcommands-plugin",
   "version": "1.0.0",
-  "description": "",
+  "description": "An Obsidian plugin that provides shortcut commands for typing LateX and MathJax",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
