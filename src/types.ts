@@ -1,6 +1,6 @@
 export interface MathCommandsSettings {
     enableAutoLinebreakMathBlock: boolean;
-    enableAutoLineBreakEquation: boolean;
+    enableAutoLinebreakEquation: boolean;
 
 	enableAddMathBlockCommand: boolean;
 	enableAddEquationBlockCommand: boolean;

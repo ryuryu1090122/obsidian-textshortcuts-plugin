@@ -10,18 +10,19 @@ import {
 	PluginSettingTab,
 	Setting,
 	editorEditorField,
-	Command
+	Command,
+	EditorPosition
 } from 'obsidian';
 
 import {} from '@codemirror/state'
 import {} from '@codemirror/view'
 
-
+import {version} from "package.json"
 import {MathCommandsSettings} from "./types"
 
 const DEFAULT_SETTINGS: MathCommandsSettings = {
 	enableAutoLinebreakMathBlock: true,
-	enableAutoLineBreakEquation: true,
+	enableAutoLinebreakEquation: true,
 
 	enableAddMathBlockCommand: true,
 	enableAddEquationBlockCommand: true,
@@ -44,7 +45,11 @@ export default class MathCommandsPlugin extends Plugin {
 				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
 					if (this.settings.enableAddMathBlockCommand) {
 						if (!checking) {
-							this.addBracket(editor, "$$", "$$");
+							if (this.settings.enableAutoLinebreakMathBlock) {
+								this.addBracket(editor, "$$", "$$", "linebreak");
+							} else {
+								this.addBracket(editor, "$$", "$$");
+							}
 						}
 						return true;
 					}
@@ -57,7 +62,11 @@ export default class MathCommandsPlugin extends Plugin {
 				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
 					if (this.settings.enableAddEquationBlockCommand) {
 						if (!checking) {
-							this.addBracket(editor, "\\start{equation}", "\\end{equation}")
+							if (this.settings.enableAutoLinebreakEquation) {
+								this.addBracket(editor, "\\start{equation}", "\\end{equation}", "linebreak")
+							} else {
+								this.addBracket(editor, "\\start{equation}", "\\end{equation}")
+							}
 						}
 						return true;
 					}
@@ -70,7 +79,11 @@ export default class MathCommandsPlugin extends Plugin {
 				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
 					if (this.settings.enableAddAlignBlockCommand) {
 						if (!checking) {
-	
+							if (this.settings.enableAutoLinebreakEquation) {
+								this.addBracket(editor, "\\start{align}", "\\end{align}", "linebreak")
+							} else {
+								this.addBracket(editor, "\\start{align}", "\\end{align}")
+							}
 						}
 						return true;
 					}
@@ -83,7 +96,7 @@ export default class MathCommandsPlugin extends Plugin {
 				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
 					if (this.settings.enableAddParenthesesCommand) {
 						if (!checking) {
-	
+							this.addBracket(editor, "\\right(", "\\left)")
 						}
 						return true;
 					}
@@ -91,12 +104,12 @@ export default class MathCommandsPlugin extends Plugin {
 			},
 
 			{
-				id: 'add-frac',
-				name: 'Add frac',
+				id: 'add-fractions',
+				name: 'Add fractions',
 				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
 					if (this.settings.enableAddFracCommand) {
 						if (!checking) {
-	
+							this.addBracket(editor, "\\frac{", "}{}")
 						}
 						return true;
 					}
@@ -133,10 +146,10 @@ export default class MathCommandsPlugin extends Plugin {
 
 		switch (mode) {
 			case "linebreak":
-				editor.replaceRange("\\n" + ket + "\\n", to);
-				editor.replaceRange("\\n" + bra + "\\n", from);
-				if (from == to) {
-					editor.setCursor(from.line + 2, 0);
+				editor.replaceRange("\n" + ket + "\n", to);
+				editor.replaceRange("\n" + bra + "\n", from);
+				if (from.line == to.line && from.ch == to.ch) {
+						editor.setCursor(from.line + 2, 0);
 				} else {
 					editor.setCursor(to.line + 3, ket.length);
 				}
@@ -145,10 +158,14 @@ export default class MathCommandsPlugin extends Plugin {
 			default:
 				editor.replaceRange(ket, to);
 				editor.replaceRange(bra, from);
-				if (from == to) {
-					editor.setCursor(from.line, from.ch + bra.length);
+				if (from.line == to.line) {
+					if (from.ch == to.ch) {
+						editor.setCursor(from.line, from.ch + bra.length);
+					} else {
+						editor.setCursor(to.line, to.ch + bra.length + ket.length);
+					}
 				} else {
-					editor.setCursor(to.line, to.ch + ket.length);
+						editor.setCursor(to.line, to.ch + ket.length);
 				}
 		}
 	}
@@ -166,10 +183,35 @@ class MathCommandsSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
 		containerEl.empty();
 
-		containerEl.createEl('h2', { text: 'Math Commands for Obsidian - Settings' });
+		containerEl.createEl('h1', {text: 'Math Commands v' + version})
 
 		new Setting(containerEl)
-			.setName('$$ ... $$')
+			.setName('Enable Auto Bleaklines in $$ ... $$')
+			.addToggle((toggle) => toggle
+				.setValue(this.plugin.settings.enableAutoLinebreakMathBlock)
+				.onChange(async (value) => {
+					this.plugin.settings.enableAutoLinebreakMathBlock = value;
+					await this.plugin.saveData(this.plugin.settings);
+					this.display();
+				}));
+
+		new Setting(containerEl)
+			.setName('Enable Auto Bleaklines in \\begin{} ... \\end{}')
+			.addToggle((toggle) => toggle
+				.setValue(this.plugin.settings.enableAutoLinebreakEquation)
+				.onChange(async (value) => {
+					this.plugin.settings.enableAutoLinebreakEquation = value;
+					await this.plugin.saveData(this.plugin.settings);
+					this.display();
+				}));
+
+		containerEl.createEl('h3', { text: '　' });
+
+		containerEl.createEl('h4', { text: 'The items selected below will be displayed in your Command Palette.' });
+
+		new Setting(containerEl)
+			.setName('Add math block')
+			.setDesc('$$ ... $$')
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.enableAddMathBlockCommand)
 				.onChange(async (value) => {
@@ -179,7 +221,8 @@ class MathCommandsSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('begin{equation} ... end{equation}')
+			.setName('Add equation block')
+			.setDesc('\\begin{ equation } ... \\end{ equation }')
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.enableAddEquationBlockCommand)
 				.onChange(async (value) => {
@@ -188,7 +231,8 @@ class MathCommandsSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('begin{align} ... end{align}')
+			.setName('Add multiple equations block')
+			.setDesc('\\begin{ align } ... \\end{ align }')
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.enableAddAlignBlockCommand)
 				.onChange(async (value) => {
@@ -197,7 +241,8 @@ class MathCommandsSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('\\right( ... \\left)')
+			.setName('Add parentheses block')
+			.setDesc('\\right( ... \\left)')
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.enableAddParenthesesCommand)
 				.onChange(async (value) => {
@@ -206,7 +251,8 @@ class MathCommandsSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('\\frac{}{}')
+			.setName('Add fractions')
+			.setDesc('\\frac{ } { }')
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.enableAddFracCommand)
 				.onChange(async (value) => {
