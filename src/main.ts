@@ -2,16 +2,11 @@ import { context } from 'esbuild';
 import {
 	App,
 	Editor,
-	EditorTransaction,
 	MarkdownView,
-	Modal,
-	Notice,
 	Plugin, 
 	PluginSettingTab,
 	Setting,
-	editorEditorField,
 	Command,
-	EditorPosition
 } from 'obsidian';
 
 import {} from '@codemirror/state'
