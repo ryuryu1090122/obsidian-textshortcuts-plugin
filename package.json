@@ -9,7 +9,7 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
   },
   "keywords": [],
-  "author": "Loquat",
+  "author": "ryuryu1090122",
   "license": "MIT",
 
   "devDependencies": {

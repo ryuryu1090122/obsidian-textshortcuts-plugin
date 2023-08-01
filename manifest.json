@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Add shortcut commands for typing LateX and MathJax",
-	"author": "Loquat",
+	"author": "ryuryu1090122",
 	"authorUrl": "https://github.com/ryuryu1090122/obsidian-mathcommands-plugin",
 	"fundingUrl": "",
 	"isDesktopOnly": false
