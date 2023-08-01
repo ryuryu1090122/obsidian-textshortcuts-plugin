@@ -1,10 +1,19 @@
-export interface MathCommandsSettings {
-    enableAutoLinebreakMathBlock: boolean;
-    enableAutoLinebreakEquation: boolean;
+export type MathCommandsSettings = {
+	linebreak: {
+		enableAutoLinebreakMathBlock: boolean;
+    	enableAutoLinebreakEquation: boolean;
+		[key: string]: boolean;
+	}
+	commands: MathCommand[]
+}
 
-	enableAddMathBlockCommand: boolean;
-	enableAddEquationBlockCommand: boolean;
-	enableAddAlignBlockCommand: boolean;
-	enableAddParenthesesCommand: boolean;
-	enableAddFracCommand: boolean;
+export type MathCommand = {
+	id: string;
+	name: string;
+	enable: boolean;
+	bra: string;
+	ket: string;
+	linebreakstyle: string;
+	settingstitle: string;
+	settingsdesc: string;
 }

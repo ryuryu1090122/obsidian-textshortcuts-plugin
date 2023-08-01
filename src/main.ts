@@ -1,29 +1,22 @@
-import { context } from 'esbuild';
 import {
 	App,
 	Editor,
-	MarkdownView,
 	Plugin, 
 	PluginSettingTab,
 	Setting,
-	Command,
 } from 'obsidian';
 
-import {} from '@codemirror/state'
-import {} from '@codemirror/view'
-
-import {version} from "package.json"
-import {MathCommandsSettings} from "./types"
+import { version } from "package.json"
+import { MathCommandsSettings } from "./types"
+import { CommandList } from './commands';
 
 const DEFAULT_SETTINGS: MathCommandsSettings = {
-	enableAutoLinebreakMathBlock: true,
-	enableAutoLinebreakEquation: true,
+	linebreak: {
+		enableAutoLinebreakMathBlock: true,
+		enableAutoLinebreakEquation: true,
+	},
 
-	enableAddMathBlockCommand: true,
-	enableAddEquationBlockCommand: true,
-	enableAddAlignBlockCommand: true,
-	enableAddParenthesesCommand: true,
-	enableAddFracCommand: true
+	commands: []
 }
 
 export default class MathCommandsPlugin extends Plugin {
@@ -32,87 +25,34 @@ export default class MathCommandsPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		
-		let commands: Command[] = [
-			{
-				id: 'add-math-block',
-				name: 'Add math block',
-				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
-					if (this.settings.enableAddMathBlockCommand) {
+
+		for (let i = 0; i < this.settings.commands.length; i++) {
+			let command = this.settings.commands[i];
+			this.addCommand({
+				id: command.id,
+				name: command.name,
+				editorCheckCallback: (checking, editor, ctx) => {
+					if (command.enable) {
 						if (!checking) {
-							if (this.settings.enableAutoLinebreakMathBlock) {
-								this.addBracket(editor, "$$", "$$", "linebreak");
+							if (this.settings.linebreak[command.linebreakstyle]) {
+								this.addBracket(editor, command.bra, command.ket, "linebreak");
 							} else {
-								this.addBracket(editor, "$$", "$$");
+								this.addBracket(editor, command.bra, command.ket)
 							}
 						}
 						return true;
 					}
-				}
+				},
+			})
+		}
+
+		this.addCommand({
+			id: "debug",
+			name: "debug",
+			callback: () => {
+				console.log("command length : ", CommandList[0])
 			},
-
-			{
-				id: 'add-equation-block',
-				name: 'Add equation block',
-				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
-					if (this.settings.enableAddEquationBlockCommand) {
-						if (!checking) {
-							if (this.settings.enableAutoLinebreakEquation) {
-								this.addBracket(editor, "\\start{equation}", "\\end{equation}", "linebreak")
-							} else {
-								this.addBracket(editor, "\\start{equation}", "\\end{equation}")
-							}
-						}
-						return true;
-					}
-				}
-			},
-
-			{
-				id: 'add-align-block',
-				name: 'Add multiple equations block',
-				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
-					if (this.settings.enableAddAlignBlockCommand) {
-						if (!checking) {
-							if (this.settings.enableAutoLinebreakEquation) {
-								this.addBracket(editor, "\\start{align}", "\\end{align}", "linebreak")
-							} else {
-								this.addBracket(editor, "\\start{align}", "\\end{align}")
-							}
-						}
-						return true;
-					}
-				}
-			},
-
-			{
-				id: 'add-parentheses-block',
-				name: 'Add parentheses block',
-				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
-					if (this.settings.enableAddParenthesesCommand) {
-						if (!checking) {
-							this.addBracket(editor, "\\right(", "\\left)")
-						}
-						return true;
-					}
-				}
-			},
-
-			{
-				id: 'add-fractions',
-				name: 'Add fractions',
-				editorCheckCallback: (checking: boolean, editor: Editor, view: MarkdownView) => {
-					if (this.settings.enableAddFracCommand) {
-						if (!checking) {
-							this.addBracket(editor, "\\frac{", "}{}")
-						}
-						return true;
-					}
-				}
-			}
-		]
-
-		this.addCommands(commands)
+		})
 
 		this.addSettingTab(new MathCommandsSettingTab(this.app, this));
 	}
@@ -122,18 +62,18 @@ export default class MathCommandsPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		console.log("loadsettings debug : ", CommandList)
+		this.settings = Object.assign({}, DEFAULT_SETTINGS);
+		this.settings.commands = CommandList;
+		Object.assign(this.settings, await this.loadData());
+
+		console.log("post loadsettings debug : ", this.settings)
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
 
-	private addCommands(commands: Command[]): void {
-		for (let i = 0; i < commands.length; i++) {
-			this.addCommand(commands[i])
-		}
-	}
 
 	private addBracket(editor: Editor, bra: string, ket: string, mode?: "linebreak"): void {
 		let from = editor.getCursor("from");
@@ -183,9 +123,9 @@ class MathCommandsSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Enable Auto Bleaklines in $$ ... $$')
 			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.enableAutoLinebreakMathBlock)
+				.setValue(this.plugin.settings.linebreak.enableAutoLinebreakMathBlock)
 				.onChange(async (value) => {
-					this.plugin.settings.enableAutoLinebreakMathBlock = value;
+					this.plugin.settings.linebreak.enableAutoLinebreakMathBlock = value;
 					await this.plugin.saveData(this.plugin.settings);
 					this.display();
 				}));
@@ -193,9 +133,9 @@ class MathCommandsSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Enable Auto Bleaklines in \\begin{} ... \\end{}')
 			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.enableAutoLinebreakEquation)
+				.setValue(this.plugin.settings.linebreak.enableAutoLinebreakEquation)
 				.onChange(async (value) => {
-					this.plugin.settings.enableAutoLinebreakEquation = value;
+					this.plugin.settings.linebreak.enableAutoLinebreakEquation = value;
 					await this.plugin.saveData(this.plugin.settings);
 					this.display();
 				}));
@@ -204,56 +144,18 @@ class MathCommandsSettingTab extends PluginSettingTab {
 
 		containerEl.createEl('h4', { text: 'The items selected below will be displayed in your Command Palette.' });
 
-		new Setting(containerEl)
-			.setName('Add math block')
-			.setDesc('$$ ... $$')
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.enableAddMathBlockCommand)
-				.onChange(async (value) => {
-					this.plugin.settings.enableAddMathBlockCommand = value;
-					await this.plugin.saveData(this.plugin.settings);
-					this.display();
-				}));
-
-		new Setting(containerEl)
-			.setName('Add equation block')
-			.setDesc('\\begin{ equation } ... \\end{ equation }')
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.enableAddEquationBlockCommand)
-				.onChange(async (value) => {
-					this.plugin.settings.enableAddEquationBlockCommand = value;
-					await this.plugin.saveData(this.plugin.settings);
-				}));
-
-		new Setting(containerEl)
-			.setName('Add multiple equations block')
-			.setDesc('\\begin{ align } ... \\end{ align }')
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.enableAddAlignBlockCommand)
-				.onChange(async (value) => {
-					this.plugin.settings.enableAddAlignBlockCommand = value;
-					await this.plugin.saveData(this.plugin.settings);
-				}));
-
-		new Setting(containerEl)
-			.setName('Add parentheses block')
-			.setDesc('\\right( ... \\left)')
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.enableAddParenthesesCommand)
-				.onChange(async (value) => {
-					this.plugin.settings.enableAddParenthesesCommand = value;
-					await this.plugin.saveData(this.plugin.settings);
-				}));
-
-		new Setting(containerEl)
-			.setName('Add fractions')
-			.setDesc('\\frac{ } { }')
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.enableAddFracCommand)
-				.onChange(async (value) => {
-					this.plugin.settings.enableAddFracCommand = value;
-					await this.plugin.saveData(this.plugin.settings);
-				}));
-
+		for (let i = 0; i < this.plugin.settings.commands.length; i++) {
+			let command = this.plugin.settings.commands[i];
+			new Setting(containerEl)
+				.setName(command.settingstitle)
+				.setDesc(command.settingsdesc)
+				.addToggle((toggle) => toggle
+					.setValue(command.enable)
+					.onChange(async (value) => {
+						this.plugin.settings.commands[i].enable = value;
+						await this.plugin.saveData(this.plugin.settings)
+					}));
+		}
 	}
+	
 }
