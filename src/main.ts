@@ -49,14 +49,6 @@ export default class MathCommandsPlugin extends Plugin {
 			})
 		}
 
-		this.addCommand({
-			id: "debug",
-			name: "debug",
-			callback: () => {
-				console.log("command length : ", CommandList[0])
-			},
-		})
-
 		this.addSettingTab(new MathCommandsSettingTab(this.app, this));
 	}
 
@@ -65,12 +57,9 @@ export default class MathCommandsPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		console.log("loadsettings debug : ", CommandList)
 		this.settings = Object.assign({}, DEFAULT_SETTINGS);
 		this.settings.commands = CommandList;
 		Object.assign(this.settings, await this.loadData());
-
-		console.log("post loadsettings debug : ", this.settings)
 	}
 
 	async saveSettings() {
@@ -84,27 +73,63 @@ export default class MathCommandsPlugin extends Plugin {
 
 		switch (mode) {
 			case "linebreak":
-				editor.replaceRange("\n" + ket + "\n", to);
-				editor.replaceRange("\n" + bra + "\n", from);
-				if (from.line == to.line && from.ch == to.ch) {
-						editor.setCursor(from.line + 2, 0);
+				let line = editor.getLine(from.line)
+				let before = Boolean(line.slice(0, from.ch))
+				let after = Boolean(line.slice(to.ch))
+
+				if (editor.somethingSelected()) {
+
+					if (!before && !after) {
+						editor.replaceRange("\n" + ket, to)
+						editor.replaceRange(bra + "\n", from)
+						editor.setCursor({ch: 0, line: from.line + 1})
+					}
+					else if (before && !after) {
+						editor.replaceRange("\n" +  ket, to)
+						editor.replaceRange("\n" + bra + "\n", from)
+						editor.setCursor({ch: 0, line: from.line + 2})
+					}
+					else if (!before && after) {
+						editor.replaceRange("\n" + ket + "\n", to)
+						editor.replaceRange(bra + "\n", from)
+						editor.setCursor({ch: 0, line: from.line + 1})
+					}
+					else if (before && after) {
+						editor.replaceRange("\n" + ket + "\n", to)
+						editor.replaceRange("\n" + bra + "\n", from)
+						editor.setCursor({ch: 0, line: from.line + 2})
+					}
+					
 				} else {
-					editor.setCursor(to.line + 3, ket.length);
+
+					if (!before && !after) {
+						editor.replaceRange("\n\n" + ket, to)
+						editor.replaceRange(bra, from)
+						editor.setCursor({ch: 0, line: from.line + 1})
+					}
+					else if (before && !after) {
+						editor.replaceRange("\n\n" +  ket, to)
+						editor.replaceRange("\n" + bra, from)
+						editor.setCursor({ch: 0, line: from.line + 2})
+					}
+					else if (!before && after) {
+						editor.replaceRange("\n\n" + ket + "\n", to)
+						editor.replaceRange(bra, from)
+						editor.setCursor({ch: 0, line: from.line + 1})
+					}
+					else if (before && after) {
+						editor.replaceRange("\n\n" + ket + "\n", to)
+						editor.replaceRange("\n" + bra, from)
+						editor.setCursor({ch: 0, line: from.line + 2})
+					}
 				}
+
 				break;
 
 			default:
 				editor.replaceRange(ket, to);
 				editor.replaceRange(bra, from);
-				if (from.line == to.line) {
-					if (from.ch == to.ch) {
-						editor.setCursor(from.line, from.ch + bra.length);
-					} else {
-						editor.setCursor(to.line, to.ch + bra.length + ket.length);
-					}
-				} else {
-						editor.setCursor(to.line, to.ch + ket.length);
-				}
+				editor.setCursor({ch: from.ch + bra.length, line: from.line})
 		}
 	}
 }
