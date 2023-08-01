@@ -14,6 +14,9 @@ const DEFAULT_SETTINGS: MathCommandsSettings = {
 	linebreak: {
 		enableAutoLinebreakMathBlock: true,
 		enableAutoLinebreakEquation: true,
+		enableAutoLinebreakParentheses: true,
+		enableAutoLinebreakMatrix: true,
+		enableAutoLinebreakIntegral: true,
 	},
 
 	commands: []
@@ -131,7 +134,7 @@ class MathCommandsSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Enable Auto Bleaklines in \\begin{} ... \\end{}')
+			.setName('Enable Auto Bleaklines in Equations')
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.linebreak.enableAutoLinebreakEquation)
 				.onChange(async (value) => {
@@ -139,6 +142,37 @@ class MathCommandsSettingTab extends PluginSettingTab {
 					await this.plugin.saveData(this.plugin.settings);
 					this.display();
 				}));
+
+		new Setting(containerEl)
+			.setName('Enable Auto Bleaklines in Parentheses')
+			.addToggle((toggle) => toggle
+				.setValue(this.plugin.settings.linebreak.enableAutoLinebreakParentheses)
+				.onChange(async (value) => {
+					this.plugin.settings.linebreak.enableAutoLinebreakParentheses = value;
+					await this.plugin.saveData(this.plugin.settings);
+					this.display();
+				}));
+
+		new Setting(containerEl)
+			.setName('Enable Auto Bleaklines in Matrix')
+			.addToggle((toggle) => toggle
+				.setValue(this.plugin.settings.linebreak.enableAutoLinebreakMatrix)
+				.onChange(async (value) => {
+					this.plugin.settings.linebreak.enableAutoLinebreakMatrix = value;
+					await this.plugin.saveData(this.plugin.settings);
+					this.display();
+				}));
+	
+		new Setting(containerEl)
+			.setName('Enable Auto Bleaklines in Integral')
+			.addToggle((toggle) => toggle
+				.setValue(this.plugin.settings.linebreak.enableAutoLinebreakIntegral)
+				.onChange(async (value) => {
+					this.plugin.settings.linebreak.enableAutoLinebreakIntegral = value;
+					await this.plugin.saveData(this.plugin.settings);
+					this.display();
+				}));
+
 
 		containerEl.createEl('h3', { text: '　' });
 

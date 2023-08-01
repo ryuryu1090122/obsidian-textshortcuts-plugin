@@ -2,6 +2,9 @@ export type MathCommandsSettings = {
 	linebreak: {
 		enableAutoLinebreakMathBlock: boolean;
     	enableAutoLinebreakEquation: boolean;
+		enableAutoLinebreakParentheses: boolean;
+		enableAutoLinebreakMatrix: boolean;
+		enableAutoLinebreakIntegral: boolean;
 		[key: string]: boolean;
 	}
 	commands: MathCommand[]
