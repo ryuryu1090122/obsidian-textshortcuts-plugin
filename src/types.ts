@@ -1,4 +1,9 @@
 export type MathCommandsSettings = {
+	globalsettings: MathCommandsGlobalSettings;
+	commands: MathCommandsCommand[];
+}
+
+export type MathCommandsGlobalSettings = {
 	linebreak: {
 		enableAutoLinebreakMathBlock: boolean;
     	enableAutoLinebreakEquation: boolean;
@@ -7,16 +12,23 @@ export type MathCommandsSettings = {
 		enableAutoLinebreakIntegral: boolean;
 		[key: string]: boolean;
 	}
-	commands: MathCommand[]
 }
 
-export type MathCommand = {
+export type MathCommandsCommand = {
 	id: string;
 	name: string;
 	enable: boolean;
-	bra: string;
-	ket: string;
-	linebreakstyle: string;
+	property: MathCommandsCommandProperty
+	settingstab: MathCommandsCommandSettings
+}
+
+export type MathCommandsCommandProperty = {
+	type: "single" | "bracket";
+	value: string[];
+	linebreakstyle?: string;
+}
+
+export type MathCommandsCommandSettings = {
 	settingstitle: string;
-	settingsdesc: string;
+	settingsdesc?: string;
 }
