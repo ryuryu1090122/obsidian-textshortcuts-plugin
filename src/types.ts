@@ -18,6 +18,7 @@ export type MathCommandsCommand = {
 	id: string;
 	name: string;
 	enable: boolean;
+	icon?: string;
 	property: MathCommandsCommandProperty
 	settingstab: MathCommandsCommandSettings
 }

@@ -158,9 +158,9 @@ class MathCommandsSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Enable Auto Bleaklines in $$ ... $$')
 			.addToggle((toggle) => toggle
-				.setValue(settings.globalsettings.linebreak.enableAutoLinebreakMathBlock)
+				.setValue(this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakMathBlock)
 				.onChange(async (value) => {
-					settings.globalsettings.linebreak.enableAutoLinebreakMathBlock = value;
+					this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakMathBlock = value;
 					await this.plugin.saveData(this.plugin.settings);
 					this.display();
 				}));
@@ -208,18 +208,18 @@ class MathCommandsSettingTab extends PluginSettingTab {
 
 		containerEl.createEl('h3', { text: '　' });
 
-		if (settings.commands.length) {
+		if (this.plugin.settings.commands.length) {
 			containerEl.createEl('h4', { text: 'The items selected below will be displayed in your Command Palette.' });
 
-			for (let i = 0; i < settings.commands.length; i++) {
-				let command = settings.commands[i];
+			for (let i = 0; i < this.plugin.settings.commands.length; i++) {
+				let command = this.plugin.settings.commands[i];
 				new Setting(containerEl)
 					.setName(command.settingstab.settingstitle)
 					.setDesc(command.settingstab.settingsdesc as string)
 					.addToggle((toggle) => toggle
 						.setValue(command.enable)
 						.onChange(async (value) => {
-							this.plugin.settings.commands[i].enable = value;
+							command.enable = value;
 							await this.plugin.saveData(this.plugin.settings)
 						}));
 			}
