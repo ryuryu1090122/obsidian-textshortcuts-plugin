@@ -4,14 +4,13 @@ export type MathCommandsSettings = {
 }
 
 export type MathCommandsGlobalSettings = {
-	linebreak: {
-		enableAutoLinebreakMathBlock: boolean;
-    	enableAutoLinebreakEquation: boolean;
-		enableAutoLinebreakParentheses: boolean;
-		enableAutoLinebreakMatrix: boolean;
-		enableAutoLinebreakIntegral: boolean;
-		[key: string]: boolean;
-	}
+	linebreak: MathCommandsGlobalSettingsLinebreak[];
+}
+
+export type MathCommandsGlobalSettingsLinebreak = {
+	id: string;
+	enable: boolean;
+	settingstab: MathCommandsSettingsTabProps;
 }
 
 export type MathCommandsCommand = {
@@ -20,7 +19,7 @@ export type MathCommandsCommand = {
 	enable: boolean;
 	icon?: string;
 	property: MathCommandsCommandProperty
-	settingstab: MathCommandsCommandSettings
+	settingstab: MathCommandsSettingsTabProps
 }
 
 export type MathCommandsCommandProperty = {
@@ -29,7 +28,7 @@ export type MathCommandsCommandProperty = {
 	linebreakstyle?: string;
 }
 
-export type MathCommandsCommandSettings = {
+export type MathCommandsSettingsTabProps = {
 	settingstitle: string;
 	settingsdesc?: string;
 }

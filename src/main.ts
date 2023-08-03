@@ -1,8 +1,5 @@
 import { App, Editor, Plugin, PluginSettingTab, Setting, FileSystemAdapter } from 'obsidian';
 
-import * as fs from 'fs'
-import * as path from 'path'
-
 import { version } from "package.json"
 import { MathCommandsCommandProperty, MathCommandsSettings } from "./types"
 import { DEFAULT_COMMANDS, DEFAULT_GLOBAL_SETTINGS } from './default-settings';
@@ -24,7 +21,7 @@ export default class MathCommandsPlugin extends Plugin {
 			this.addCommand({
 				id: command.id,
 				name: command.name,
-				//icon: "dollar-sign",
+				icon: "dollasign",
 				editorCheckCallback: (checking, editor, ctx) => {
 					if (command.enable) {
 						if (!checking) {
@@ -62,6 +59,10 @@ export default class MathCommandsPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
+	private isVarid(data: any) {
+
+	}
+
 	private addBracket(editor: Editor, props: MathCommandsCommandProperty): void {
 		let from = editor.getCursor("from");
 		let to = editor.getCursor("to");
@@ -77,7 +78,7 @@ export default class MathCommandsPlugin extends Plugin {
 				let bra = props.value[0];
 				let ket = props.value[1];
 
-				if (this.settings.globalsettings.linebreak[props.linebreakstyle as string]) {
+				if (this.isLinebreak(props.linebreakstyle as string)) {
 					let line = editor.getLine(from.line);
 					let before = Boolean(line.slice(0, from.ch));
 					let after = Boolean(line.slice(to.ch));
@@ -137,6 +138,15 @@ export default class MathCommandsPlugin extends Plugin {
 			}
 		}	
 	}
+
+	private isLinebreak(linebreakstyle: string) : boolean {
+		for (let i = 0; i < this.settings.globalsettings.linebreak.length; i++) {
+			if (this.settings.globalsettings.linebreak[i].id == linebreakstyle && this.settings.globalsettings.linebreak[i].enable) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 
 class MathCommandsSettingTab extends PluginSettingTab {
@@ -151,60 +161,27 @@ class MathCommandsSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
 		containerEl.empty();
 
-		let settings = this.plugin.settings;
-
 		containerEl.createEl('h1', {text: 'Math Commands v' + version})
 
-		new Setting(containerEl)
-			.setName('Enable Auto Bleaklines in $$ ... $$')
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakMathBlock)
-				.onChange(async (value) => {
-					this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakMathBlock = value;
-					await this.plugin.saveData(this.plugin.settings);
-					this.display();
-				}));
+		if (this.plugin.settings.globalsettings.linebreak.length) {
+			containerEl.createEl('h4', { text: 'Linebreak Settings' });
 
-		new Setting(containerEl)
-			.setName('Enable Auto Bleaklines in Equations')
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakEquation)
-				.onChange(async (value) => {
-					this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakEquation = value;
-					await this.plugin.saveData(this.plugin.settings);
-					this.display();
-				}));
-
-		new Setting(containerEl)
-			.setName('Enable Auto Bleaklines in Parentheses')
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakParentheses)
-				.onChange(async (value) => {
-					this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakParentheses = value;
-					await this.plugin.saveData(this.plugin.settings);
-					this.display();
-				}));
-
-		new Setting(containerEl)
-			.setName('Enable Auto Bleaklines in Matrix')
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakMatrix)
-				.onChange(async (value) => {
-					this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakMatrix = value;
-					await this.plugin.saveData(this.plugin.settings);
-					this.display();
-				}));
-	
-		new Setting(containerEl)
-			.setName('Enable Auto Bleaklines in Integral')
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakIntegral)
-				.onChange(async (value) => {
-					this.plugin.settings.globalsettings.linebreak.enableAutoLinebreakIntegral = value;
-					await this.plugin.saveData(this.plugin.settings);
-					this.display();
-				}));
-
+			for (let i = 0; i < this.plugin.settings.globalsettings.linebreak.length; i++) {
+				let linebreaks = this.plugin.settings.globalsettings.linebreak[i];
+				new Setting(containerEl)
+				.setName(linebreaks.settingstab.settingstitle)
+				.setDesc( (linebreaks.settingstab.settingsdesc) ? linebreaks.settingstab.settingsdesc : "")
+				.addToggle((toggle) => toggle
+					.setValue(this.plugin.settings.globalsettings.linebreak[i].enable)
+					.onChange(async (value) => {
+						this.plugin.settings.globalsettings.linebreak[i].enable = value;
+						await this.plugin.saveData(this.plugin.settings);
+						this.display();
+					}));
+			}
+		} else {
+			
+		}
 
 		containerEl.createEl('h3', { text: '　' });
 
@@ -215,7 +192,7 @@ class MathCommandsSettingTab extends PluginSettingTab {
 				let command = this.plugin.settings.commands[i];
 				new Setting(containerEl)
 					.setName(command.settingstab.settingstitle)
-					.setDesc(command.settingstab.settingsdesc as string)
+					.setDesc((command.settingstab.settingsdesc) ? command.settingstab.settingsdesc : "")
 					.addToggle((toggle) => toggle
 						.setValue(command.enable)
 						.onChange(async (value) => {

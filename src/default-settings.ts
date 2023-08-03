@@ -1,44 +1,91 @@
 import { MathCommandsCommand, MathCommandsGlobalSettings } from "./types";
 
-export const DEFAULT_GLOBAL_SETTINGS: MathCommandsGlobalSettings = {
-	linebreak: {
-		enableAutoLinebreakMathBlock: true,
-		enableAutoLinebreakEquation: true,
-		enableAutoLinebreakParentheses: true,
-		enableAutoLinebreakMatrix: true,
-		enableAutoLinebreakIntegral: true,
+/* 	
+	{
+		"globalsettings": {
+			"linebreak": [
+				{
+					"id": "",
+					"enable": true,
+					"settingstab": {
+						"settingstitle": ""
+						"settingsdesc": ""
+					}
+				}
+			]
+		},
+		"commands": [
+			{
+           		"id": "add-equation-block",
+       		    "name": "Add Equation",
+       		    "enable": true,
+       		    "icon": "dollar-sign",
+  			    "property": {
+            		"type": "bracket",
+            		"value": ["\\begin{equation}", "\\end{equation}"],
+            		"linebreakstyle": "enableAutoLinebreakEquation"
+                },
+                "settingstab": {
+                    "settingstitle": "Add Equation",
+                    "settingsdesc": "\\begin{ equation } ... \\end{ equation }"
+                }
+            },
+		]
 	}
-}
+*/
 
-/*  Templete
-    {
-        id: '',
-        name: '',
-        enable: true,
-        property: {
-            type: '',
-            value: [],
-            linebreakstyle: ''
+export const DEFAULT_GLOBAL_SETTINGS: MathCommandsGlobalSettings = {
+    linebreak: [
+        {
+            id: "enableAutoLinebreakFormula",
+            enable: true,
+            settingstab: {
+                settingstitle: "Enable Auto Linebreaks in new Formulas block"
+            }
         },
-        settingstab: {
-            settingstitle: '',
-            settingsdesc: ''
-        }
-    },
- */
+        {
+            id: "enableAutoLinebreakEquation",
+            enable: true,
+            settingstab: {
+                settingstitle: "Enable Auto Linebreaks in new Equations block"
+            }
+        },
+        {
+            id: "enableAutoLinebreakParentheses",
+            enable: true,
+            settingstab: {
+                settingstitle: "Enable Auto Linebreaks in new Parentheses block"
+            }
+        },
+        {
+            id: "enableAutoLinebreakMatrix",
+            enable: true,
+            settingstab: {
+                settingstitle: "Enable Auto Linebreaks in new Matrix block"
+            }
+        },
+        {
+            id: "enableAutoLinebreakIntegral",
+            enable: true,
+            settingstab: {
+                settingstitle: "Enable Auto Linebreaks in new Integral block"
+            }
+        },
+    ]
+}
 
 export const DEFAULT_COMMANDS: MathCommandsCommand[] = [
     {
-        id: 'add-math-block',
-	    name: 'Add Math block',
+        id: 'add-formulas-block',
+	    name: 'Add Formulas',
 	    enable: true,
         property: {
             type: 'bracket',
             value: ['$$', '$$'],
-            linebreakstyle: 'enableAutoLinebreakMathBlock'
+            linebreakstyle: 'enableAutoLinebreakFormula'
         },
         settingstab: {
-            settingstitle: 'Add math block',
+            settingstitle: 'Add Formulas',
     	    settingsdesc: '$$ ... $$'
         }
     },
@@ -162,7 +209,7 @@ export const DEFAULT_COMMANDS: MathCommandsCommand[] = [
             linebreakstyle: 'enableAutoLinebreakIntegral'
         },
         settingstab: {
-            settingstitle: 'Add Integral Large',
+            settingstitle: 'Add Integral Large (definite)',
             settingsdesc: '\\displaystyle \\int_ { ... } ^ { } dx'
         }
     },
