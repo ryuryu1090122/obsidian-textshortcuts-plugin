@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-mathcommands-plugin",
+  "name": "obsidian-textsummoner-plugin",
   "version": "1.0.0",
-  "description": "An Obsidian plugin that provides shortcut commands for typing LateX and MathJax.",
+  "description": "An Obsidian plugin for Create any text Shortcuts.",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",

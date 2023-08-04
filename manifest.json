@@ -1,11 +1,11 @@
 {
-	"id": "mathcommands-plugin",
-	"name": "Math Commands Plugin",
+	"id": "textsummoner-plugin",
+	"name": "Text Summoner",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Add shortcut commands for typing LateX and MathJax.",
+	"description": "Create any text Shortcuts.",
 	"author": "ryuryu1090122",
-	"authorUrl": "https://github.com/ryuryu1090122/obsidian-mathcommands-plugin",
+	"authorUrl": "https://github.com/ryuryu1090122/obsidian-textsummoner-plugin",
 	"fundingUrl": "",
 	"isDesktopOnly": false
 }

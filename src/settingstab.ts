@@ -1,15 +1,14 @@
 import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
 
-import { version } from "package.json"
-import MathCommandsPlugin from "./main"
-import { MathCommandsCommand, MathCommandsCommandGroup, isMathCommandsCommandGroup } from './types';
+import TextSummonerPlugin from "./main"
+import { TSCommand, TSCommandGroup, isTSCommandGroup } from './types';
 import CommandEditorModal from './comand-editor-modal';
 
-export class MathCommandsSettingTab extends PluginSettingTab {
-	plugin: MathCommandsPlugin;
+export class TSSettingTab extends PluginSettingTab {
+	plugin: TextSummonerPlugin;
 	app: App;
 
-	constructor(app: App, plugin: MathCommandsPlugin) {
+	constructor(app: App, plugin: TextSummonerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 		this.app = app;
@@ -19,11 +18,11 @@ export class MathCommandsSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
 		containerEl.empty();
 
-		containerEl.createEl('h1', {text: 'Math Commands v' + version})
+		containerEl.createEl('h1', {text: this.plugin.manifest.name })
 		containerEl.createEl('br');
 
         new Setting(containerEl)
-			.setName("New Command")
+			.setName("Create New Command")
 			.addButton((botton) => botton
                 .setIcon("plus")
 				.onClick(async () => {
@@ -32,7 +31,7 @@ export class MathCommandsSettingTab extends PluginSettingTab {
         ));
 
         new Setting(containerEl)
-        .setName("New Group")
+        .setName("Create New Group")
         .addButton((botton) => botton
             .setIcon("plus")
             .onClick(async () => {
@@ -45,10 +44,10 @@ export class MathCommandsSettingTab extends PluginSettingTab {
 			.addButton((botton) => botton
 				.setIcon("refresh-cw")
 				.onClick(async () => {
-					await (this.app as any).plugins.disablePlugin("mathcommands-plugin");
-					await (this.app as any).plugins.enablePlugin("mathcommands-plugin");
+					await (this.app as any).plugins.disablePlugin(this.plugin.manifest.id);
+					await (this.app as any).plugins.enablePlugin(this.plugin.manifest.id);
                     (Platform.isMobile) ? await sleep(600) : await sleep(200);
-					(this.app as any).setting.openTabById("mathcommands-plugin").display();
+					(this.app as any).setting.openTabById(this.plugin.manifest.id).display();
 					console.log("reload done");
 				}
         ));
@@ -59,8 +58,8 @@ export class MathCommandsSettingTab extends PluginSettingTab {
 
 		if (this.plugin.settings.commands.length) {
             this.plugin.settings.commands.forEach((commanditem) => {
-                if (isMathCommandsCommandGroup(commanditem)) {
-                    let group = commanditem as MathCommandsCommandGroup;
+                if (isTSCommandGroup(commanditem)) {
+                    let group = commanditem as TSCommandGroup;
                     new Setting(containerEl)
 					.setName( (group.settingstab) ? ( (group.settingstab.title) ? group.settingstab.title : group.name ) : group.name )
 					.setDesc( (group.settingstab) ? ( (group.settingstab.desc) ? group.settingstab.desc : "" ) : "" )
@@ -83,7 +82,7 @@ export class MathCommandsSettingTab extends PluginSettingTab {
                         })
                     })
                 } else {
-                    let command = commanditem as MathCommandsCommand;
+                    let command = commanditem as TSCommand;
                     new Setting(containerEl)
 					.setName( (command.settingstab) ? ( (command.settingstab.title) ? command.settingstab.title : command.name ) : command.name )
 					.setDesc( (command.settingstab) ? ( (command.settingstab.desc) ? command.settingstab.desc : "" ) : "" )

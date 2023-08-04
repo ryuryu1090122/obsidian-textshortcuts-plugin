@@ -1,12 +1,12 @@
 import { Modal, Setting } from "obsidian";
-import MathCommandsPlugin from "./main";
-import { MathCommandsCommand } from "./types";
+import TextSummonerPlugin from "./main";
+import { TSCommand } from "./types";
 
 export default class CommandEditorModal extends Modal {
-    plugin: MathCommandsPlugin;
-    command: null | MathCommandsCommand;
+    plugin: TextSummonerPlugin;
+    command: null | TSCommand;
 
-    constructor(plugin: MathCommandsPlugin, commanditem?: MathCommandsCommand) {
+    constructor(plugin: TextSummonerPlugin, commanditem?: TSCommand) {
         super(plugin.app);
         this.plugin = plugin;
         this.command = commanditem? commanditem: null;
@@ -21,7 +21,7 @@ export default class CommandEditorModal extends Modal {
         this.titleEl.setText("Create New Command");
     }
 
-    editCommandDisplay(command: MathCommandsCommand) {
+    editCommandDisplay(command: TSCommand) {
         const {containerEl} = this;
         this.titleEl.setText(command.name);
     }

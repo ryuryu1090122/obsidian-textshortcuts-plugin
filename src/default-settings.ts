@@ -1,4 +1,4 @@
-import { MathCommandsCommand, MathCommandsGlobalSettings, MathCommandsCommandGroup } from "./types";
+import { TSCommand, TSGlobal, TSCommandGroup } from "./types";
 
 /* 	
 	{
@@ -45,10 +45,10 @@ import { MathCommandsCommand, MathCommandsGlobalSettings, MathCommandsCommandGro
 	}
 */
 
-export const DEFAULT_GLOBAL_SETTINGS: MathCommandsGlobalSettings = {
+export const DEFAULT_GLOBAL_SETTINGS: TSGlobal = {
 }
 
-export const DEFAULT_COMMANDS: (MathCommandsCommand | MathCommandsCommandGroup)[] = [
+export const DEFAULT_COMMANDS: (TSCommand | TSCommandGroup)[] = [
     {
         id: "example-command-group",
         name: "Example Command Group",
@@ -61,7 +61,7 @@ export const DEFAULT_COMMANDS: (MathCommandsCommand | MathCommandsCommandGroup)[
                 id: "example-command-1",
                 name:"Example Command 1",
                 enable: true,
-                property: {
+                props: {
                     type: "bracket",
                     value: ["<example>", "</example>"]
                 }
@@ -72,7 +72,7 @@ export const DEFAULT_COMMANDS: (MathCommandsCommand | MathCommandsCommandGroup)[
         id: "example-command-2",
         name: "Example Command 2",
         enable: true,
-        property: {
+        props: {
             type: "single",
             value: ["\\example!"]
         },

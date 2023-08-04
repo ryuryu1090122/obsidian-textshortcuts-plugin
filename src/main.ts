@@ -1,24 +1,24 @@
 import { App, Editor, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-import { MathCommandsCommandProperty, MathCommandsSettings, MathCommandsCommand, isMathCommandsCommandGroup, MathCommandsCommandGroup } from "./types"
-import { MathCommandsSettingTab } from "./settingstab"
+import { TSCommandProperty, TSSettings, TSCommand, isTSCommandGroup, TSCommandGroup } from "./types"
+import { TSSettingTab } from "./settingstab"
 import { DEFAULT_COMMANDS, DEFAULT_GLOBAL_SETTINGS } from './default-settings';
 
-const DEFAULT_SETTINGS: MathCommandsSettings = {
-	globalsettings: DEFAULT_GLOBAL_SETTINGS,
+const DEFAULT_SETTINGS: TSSettings = {
+	global: DEFAULT_GLOBAL_SETTINGS,
 	commands: [],
 }
 
-export default class MathCommandsPlugin extends Plugin {
+export default class TextSummonerPlugin extends Plugin {
 	app: App;
-	settings: MathCommandsSettings;
+	settings: TSSettings;
 
 	async onload() {
 		await this.loadSettings();
 
 		this.settings.commands.forEach((commanditem) => {
-			if (isMathCommandsCommandGroup(commanditem)) {
-				let group = commanditem as MathCommandsCommandGroup;
+			if (isTSCommandGroup(commanditem)) {
+				let group = commanditem as TSCommandGroup;
 				group.commands.forEach((command) => {
 					this.addCommand({
 						id: command.id,
@@ -27,14 +27,14 @@ export default class MathCommandsPlugin extends Plugin {
 						editorCheckCallback: (checking, editor) => {
 							if (command.enable && group.enable) {
 								if (!checking) {
-									this.addBracket(editor, command.property);
+									this.addBracket(editor, command.props);
 								}
 								return true;
 							}
 						}
 					})
 				})} else {
-				let command = commanditem as MathCommandsCommand;
+				let command = commanditem as TSCommand;
 				this.addCommand({
 					id: command.id,
 					name: command.name,
@@ -42,7 +42,7 @@ export default class MathCommandsPlugin extends Plugin {
 					editorCheckCallback: (checking, editor, ctx) => {
 						if (command.enable) {
 							if (!checking) {
-								this.addBracket(editor, command.property);
+								this.addBracket(editor, command.props);
 							}
 							return true;
 						}
@@ -52,14 +52,14 @@ export default class MathCommandsPlugin extends Plugin {
 		})
 
 		this.addCommand({
-			id: "mathcommands_debug",
+			id: "textsummoner_debug",
 			name: "debug",
 			callback: () => {
 				this.reload();
 			},
 		})
 
-		this.addSettingTab(new MathCommandsSettingTab(this.app, this));
+		this.addSettingTab(new TSSettingTab(this.app, this));
 	}
 
 	onunload() {
@@ -71,7 +71,7 @@ export default class MathCommandsPlugin extends Plugin {
 		const jsondata = await this.loadData()
 
 		if (jsondata) {
-			this.settings.globalsettings = Object.assign(this.settings.globalsettings, jsondata["globalsettings"]);
+			this.settings.global = Object.assign(this.settings.global, jsondata["globalsettings"]);
 			this.settings.commands = Object.assign(this.settings.commands, jsondata["commands"]);
 		} else {
 			this.settings.commands = Object.assign(this.settings.commands, DEFAULT_COMMANDS);
@@ -95,7 +95,7 @@ export default class MathCommandsPlugin extends Plugin {
 
 	}
 
-	private addBracket(editor: Editor, props: MathCommandsCommandProperty): void {
+	private addBracket(editor: Editor, props: TSCommandProperty): void {
 		let from = editor.getCursor("from");
 		let to = editor.getCursor("to");
 

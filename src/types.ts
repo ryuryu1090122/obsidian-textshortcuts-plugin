@@ -1,39 +1,39 @@
-export type MathCommandsSettings = {
-	globalsettings: MathCommandsGlobalSettings;
-	commands: (MathCommandsCommand | MathCommandsCommandGroup)[];
+export type TSSettings = {
+	global: TSGlobal;
+	commands: (TSCommand | TSCommandGroup)[];
 }
 
-export type MathCommandsGlobalSettings = {
+export type TSGlobal = {
 }
 
-export type MathCommandsCommandGroup = {
+export type TSCommandGroup = {
 	id: string;
 	name: string;
 	enable: boolean;
-	settingstab?: MathCommandsSettingsTabProps;
-	commands: MathCommandsCommand[];
+	settingstab?: TSSettingsTabProps;
+	commands: TSCommand[];
 }
 
-export const isMathCommandsCommandGroup = (commanditem: any): commanditem is MathCommandsCommandGroup => {
-	return !!(commanditem as MathCommandsCommandGroup)?.commands
+export const isTSCommandGroup = (commanditem: any): commanditem is TSCommandGroup => {
+	return !!(commanditem as TSCommandGroup)?.commands
 }
 
-export type MathCommandsCommand = {
+export type TSCommand = {
 	id: string;
 	name: string;
 	enable: boolean;
 	icon?: string;
-	property: MathCommandsCommandProperty
-	settingstab?: MathCommandsSettingsTabProps
+	props: TSCommandProperty
+	settingstab?: TSSettingsTabProps
 }
 
-export type MathCommandsCommandProperty = {
+export type TSCommandProperty = {
 	type: "single" | "bracket";
 	value: string[];
 	linebreak?: true;
 }
 
-export type MathCommandsSettingsTabProps = {
+export type TSSettingsTabProps = {
 	title?: string;
 	desc?: string;
 }
