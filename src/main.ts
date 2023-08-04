@@ -1,7 +1,7 @@
-import { App, Editor, Plugin, PluginSettingTab, Setting, FileSystemAdapter } from 'obsidian';
+import { App, Editor, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-import { version } from "package.json"
-import { MathCommandsCommandProperty, MathCommandsSettings } from "./types"
+import { MathCommandsCommandProperty, MathCommandsSettings, MathCommandsCommand, isMathCommandsCommandGroup, MathCommandsCommandGroup } from "./types"
+import { MathCommandsSettingTab } from "./settingstab"
 import { DEFAULT_COMMANDS, DEFAULT_GLOBAL_SETTINGS } from './default-settings';
 
 const DEFAULT_SETTINGS: MathCommandsSettings = {
@@ -16,22 +16,48 @@ export default class MathCommandsPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		for (let i = 0; i < this.settings.commands.length; i++) {
-			let command = this.settings.commands[i];
-			this.addCommand({
-				id: command.id,
-				name: command.name,
-				icon: "dollasign",
-				editorCheckCallback: (checking, editor, ctx) => {
-					if (command.enable) {
-						if (!checking) {
-							this.addBracket(editor, command.property);
+		this.settings.commands.forEach((commanditem) => {
+			if (isMathCommandsCommandGroup(commanditem)) {
+				let group = commanditem as MathCommandsCommandGroup;
+				group.commands.forEach((command) => {
+					this.addCommand({
+						id: command.id,
+						name: command.name,
+						icon: command.icon,
+						editorCheckCallback: (checking, editor) => {
+							if (command.enable && group.enable) {
+								if (!checking) {
+									this.addBracket(editor, command.property);
+								}
+								return true;
+							}
 						}
-						return true;
+					})
+				})} else {
+				let command = commanditem as MathCommandsCommand;
+				this.addCommand({
+					id: command.id,
+					name: command.name,
+					icon: command.icon,
+					editorCheckCallback: (checking, editor, ctx) => {
+						if (command.enable) {
+							if (!checking) {
+								this.addBracket(editor, command.property);
+							}
+							return true;
+						}
 					}
-				},
-			})
-		}
+				})
+			}
+		})
+
+		this.addCommand({
+			id: "mathcommands_debug",
+			name: "debug",
+			callback: () => {
+				this.reload();
+			},
+		})
 
 		this.addSettingTab(new MathCommandsSettingTab(this.app, this));
 	}
@@ -59,6 +85,12 @@ export default class MathCommandsPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
+	async reload() {
+		await (this.app as any).plugins.disablePlugin(this.manifest.id);
+		await (this.app as any).plugins.enablePlugin(this.manifest.id);
+		console.log("reload done");
+	}
+
 	private isVarid(data: any) {
 
 	}
@@ -78,10 +110,10 @@ export default class MathCommandsPlugin extends Plugin {
 				let bra = props.value[0];
 				let ket = props.value[1];
 
-				if (this.isLinebreak(props.linebreakstyle as string)) {
+				if (props.linebreak) {
 					let line = editor.getLine(from.line);
-					let before = Boolean(line.slice(0, from.ch));
-					let after = Boolean(line.slice(to.ch));
+					let before = !!(line.slice(0, from.ch));
+					let after = !!(line.slice(to.ch));
 	
 					if (editor.somethingSelected()) {
 						if (!before && !after) {
@@ -138,72 +170,5 @@ export default class MathCommandsPlugin extends Plugin {
 			}
 		}	
 	}
-
-	private isLinebreak(linebreakstyle: string) : boolean {
-		for (let i = 0; i < this.settings.globalsettings.linebreak.length; i++) {
-			if (this.settings.globalsettings.linebreak[i].id == linebreakstyle && this.settings.globalsettings.linebreak[i].enable) {
-				return true;
-			}
-		}
-		return false;
-	}
 }
 
-class MathCommandsSettingTab extends PluginSettingTab {
-	plugin: MathCommandsPlugin;
-
-	constructor(app: App, plugin: MathCommandsPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const {containerEl} = this;
-		containerEl.empty();
-
-		containerEl.createEl('h1', {text: 'Math Commands v' + version})
-
-		if (this.plugin.settings.globalsettings.linebreak.length) {
-			containerEl.createEl('h4', { text: 'Linebreak Settings' });
-
-			for (let i = 0; i < this.plugin.settings.globalsettings.linebreak.length; i++) {
-				let linebreaks = this.plugin.settings.globalsettings.linebreak[i];
-				new Setting(containerEl)
-				.setName(linebreaks.settingstab.settingstitle)
-				.setDesc( (linebreaks.settingstab.settingsdesc) ? linebreaks.settingstab.settingsdesc : "")
-				.addToggle((toggle) => toggle
-					.setValue(this.plugin.settings.globalsettings.linebreak[i].enable)
-					.onChange(async (value) => {
-						this.plugin.settings.globalsettings.linebreak[i].enable = value;
-						await this.plugin.saveData(this.plugin.settings);
-						this.display();
-					}));
-			}
-		} else {
-			
-		}
-
-		containerEl.createEl('h3', { text: '　' });
-
-		if (this.plugin.settings.commands.length) {
-			containerEl.createEl('h4', { text: 'The items selected below will be displayed in your Command Palette.' });
-
-			for (let i = 0; i < this.plugin.settings.commands.length; i++) {
-				let command = this.plugin.settings.commands[i];
-				new Setting(containerEl)
-					.setName(command.settingstab.settingstitle)
-					.setDesc((command.settingstab.settingsdesc) ? command.settingstab.settingsdesc : "")
-					.addToggle((toggle) => toggle
-						.setValue(command.enable)
-						.onChange(async (value) => {
-							command.enable = value;
-							await this.plugin.saveData(this.plugin.settings)
-						}));
-			}
-		} else {
-			containerEl.createEl('h4', { text: 'Oops, no commands have been loaded.' });
-			containerEl.createEl('h2', { text: 'Please try using the \"Restore Default Command\" option.' });
-			containerEl.createEl('h2', { text: 'To create custom commands: You can create custom commands by editing the data.json file located in the plugin\'s source directory.' });
-		}
-	}
-}

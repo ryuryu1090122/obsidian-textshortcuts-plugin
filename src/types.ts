@@ -1,16 +1,21 @@
 export type MathCommandsSettings = {
 	globalsettings: MathCommandsGlobalSettings;
-	commands: MathCommandsCommand[];
+	commands: (MathCommandsCommand | MathCommandsCommandGroup)[];
 }
 
 export type MathCommandsGlobalSettings = {
-	linebreak: MathCommandsGlobalSettingsLinebreak[];
 }
 
-export type MathCommandsGlobalSettingsLinebreak = {
+export type MathCommandsCommandGroup = {
 	id: string;
+	name: string;
 	enable: boolean;
-	settingstab: MathCommandsSettingsTabProps;
+	settingstab?: MathCommandsSettingsTabProps;
+	commands: MathCommandsCommand[];
+}
+
+export const isMathCommandsCommandGroup = (commanditem: any): commanditem is MathCommandsCommandGroup => {
+	return !!(commanditem as MathCommandsCommandGroup)?.commands
 }
 
 export type MathCommandsCommand = {
@@ -19,16 +24,16 @@ export type MathCommandsCommand = {
 	enable: boolean;
 	icon?: string;
 	property: MathCommandsCommandProperty
-	settingstab: MathCommandsSettingsTabProps
+	settingstab?: MathCommandsSettingsTabProps
 }
 
 export type MathCommandsCommandProperty = {
 	type: "single" | "bracket";
 	value: string[];
-	linebreakstyle?: string;
+	linebreak?: true;
 }
 
 export type MathCommandsSettingsTabProps = {
-	settingstitle: string;
-	settingsdesc?: string;
+	title?: string;
+	desc?: string;
 }
