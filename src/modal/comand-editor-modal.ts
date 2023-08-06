@@ -1,12 +1,12 @@
 import { Modal, Setting } from "obsidian";
-import TextSummonerPlugin from "./main";
-import { TSCommand } from "./types";
+import TSPlugin from "../main";
+import { TSCommand } from "../types";
 
 export default class CommandEditorModal extends Modal {
-    plugin: TextSummonerPlugin;
+    plugin: TSPlugin;
     command: null | TSCommand;
 
-    constructor(plugin: TextSummonerPlugin, commanditem?: TSCommand) {
+    constructor(plugin: TSPlugin, commanditem?: TSCommand) {
         super(plugin.app);
         this.plugin = plugin;
         this.command = commanditem? commanditem: null;

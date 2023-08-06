@@ -1,5 +1,5 @@
 {
-  "name": "obsidian-textsummoner-plugin",
+  "name": "obsidian-textshortcuts-plugin",
   "version": "1.0.0",
   "description": "An Obsidian plugin for Create any text Shortcuts.",
   "main": "main.js",

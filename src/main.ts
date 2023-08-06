@@ -1,7 +1,7 @@
 import { App, Editor, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
 import { TSCommandProperty, TSSettings, TSCommand, isTSCommandGroup, TSCommandGroup } from "./types"
-import { TSSettingTab } from "./settingstab"
+import { TSSettingTab } from "./settingtab"
 import { DEFAULT_COMMANDS, DEFAULT_GLOBAL_SETTINGS } from './default-settings';
 
 const DEFAULT_SETTINGS: TSSettings = {
@@ -9,7 +9,7 @@ const DEFAULT_SETTINGS: TSSettings = {
 	commands: [],
 }
 
-export default class TextSummonerPlugin extends Plugin {
+export default class TSPlugin extends Plugin {
 	app: App;
 	settings: TSSettings;
 
@@ -52,7 +52,7 @@ export default class TextSummonerPlugin extends Plugin {
 		})
 
 		this.addCommand({
-			id: "textsummoner_debug",
+			id: "textshortcuts_debug",
 			name: "debug",
 			callback: () => {
 				this.reload();
