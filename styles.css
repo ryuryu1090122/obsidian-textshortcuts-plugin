@@ -27,6 +27,29 @@
     background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1mb2xkZXIiPjxwYXRoIGQ9Ik00IDIwaDE2YTIgMiAwIDAgMCAyLTJWOGEyIDIgMCAwIDAtMi0yaC03LjkzYTIgMiAwIDAgMS0xLjY2LS45bC0uODItMS4yQTIgMiAwIDAgMCA3LjkzIDNINGEyIDIgMCAwIDAtMiAydjEzYzAgMS4xLjkgMiAyIDJaIi8+PC9zdmc+");
 }
 
+.textshortcuts-settings-item-group-name-nodesc {
+    position: relative;
+    margin-left: 40px;
+}
+
+.textshortcuts-settings-item-group-name-nodesc::before {
+    content: '';
+    position: absolute;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    left: -36px;
+
+    transform: translateY(-0%);
+
+    width: 1.5em;
+    height: 1.5em;
+
+    filter: brightness(0.8);
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1mb2xkZXIiPjxwYXRoIGQ9Ik00IDIwaDE2YTIgMiAwIDAgMCAyLTJWOGEyIDIgMCAwIDAtMi0yaC03LjkzYTIgMiAwIDAgMS0xLjY2LS45bC0uODItMS4yQTIgMiAwIDAgMCA3LjkzIDNINGEyIDIgMCAwIDAtMiAydjEzYzAgMS4xLjkgMiAyIDJaIi8+PC9zdmc+");
+}
+
 .textshortcuts-settings-item-group-desc {
     position: relative;
     margin-left: 40px;
@@ -47,7 +70,26 @@
 
     left: -36px;
 
-    transform: translateY(-0%);
+    width: 1.5em;
+    height: 1.5em;
+
+    filter: brightness(0.8);
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1maWxlIj48cGF0aCBkPSJNMTQuNSAySDZhMiAyIDAgMCAwLTIgMnYxNmEyIDIgMCAwIDAgMiAyaDEyYTIgMiAwIDAgMCAyLTJWNy41TDE0LjUgMnoiLz48cG9seWxpbmUgcG9pbnRzPSIxNCAyIDE0IDggMjAgOCIvPjwvc3ZnPg==");
+}
+
+.textshortcuts-settings-item-command-name-nodesc {
+    position: relative;
+    margin-left: 40px;
+}
+
+.textshortcuts-settings-item-command-name-nodesc::before {
+    content: '';
+    position: absolute;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    left: -36px;
 
     width: 1.5em;
     height: 1.5em;
@@ -59,4 +101,36 @@
 .textshortcuts-settings-item-command-desc {
     position: relative;
     margin-left: 40px;
+}
+
+.textshortcuts-modal-command-editor-hedder {
+    text-align: center !important;
+    margin-bottom: 20px;
+}
+
+.textshortcuts-modal-command-editor-textarea {
+    width: 100%;
+
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: 1px;
+
+    resize: none;
+}
+
+.textshortcuts-modal-command-editor-button {
+    margin-top: 8px;
+    width: 120px;
+    float: right;
+}
+
+.textshortcuts-modal-within-group-hedder {
+    text-align: center !important;
+    margin-bottom: 20px;
+}
+
+.textshortcuts-modal-within-group-button {
+    margin-top: 8px;
+    width: 120px;
+    float: right;
 }

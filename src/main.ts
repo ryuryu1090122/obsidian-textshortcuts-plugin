@@ -1,6 +1,7 @@
-import { App, Editor, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, Editor, Plugin } from 'obsidian';
 
-import { TSCommandProperty, TSSettings, TSCommand, isTSCommandGroup, TSCommandGroup } from "./types"
+import { TSCommandProperty, TSSettings, TSCommand, TSCommandGroup } from "./types"
+import { isTSCommandGroup, reloadPlugin, sleep } from "./util"
 import { TSSettingTab } from "./settingtab"
 import { DEFAULT_COMMANDS, DEFAULT_GLOBAL_SETTINGS } from './default-settings';
 

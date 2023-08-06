@@ -1,7 +1,8 @@
 import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
 
 import TSPlugin from "./main"
-import { TSCommand, TSCommandGroup, isTSCommandGroup } from './types';
+import { TSCommand, TSCommandGroup } from './types';
+import { isTSCommandGroup, reloadPlugin, sleep } from './util';
 import CommandEditorModal from './modal/comand-editor-modal';
 import GroupEditorModal from './modal/group-editor-modal';
 import WithinGroupModal from './modal/within-group-modal';
@@ -43,10 +44,7 @@ export class TSSettingTab extends PluginSettingTab {
 			.addButton((botton) => botton
 				.setIcon("refresh-cw")
 				.onClick(async () => {
-					await (this.app as any).plugins.disablePlugin(this.plugin.manifest.id);
-					await (this.app as any).plugins.enablePlugin(this.plugin.manifest.id);
-                    (Platform.isMobile) ? await sleep(600) : await sleep(200);
-					(this.app as any).setting.openTabById(this.plugin.manifest.id).display();
+                    (Platform.isMobile) ? await reloadPlugin(this.app, this.plugin, 400) : await reloadPlugin(this.app, this.plugin, 100);
 					console.log("reload done");
 				}
         ))
@@ -60,8 +58,8 @@ export class TSSettingTab extends PluginSettingTab {
                     let group = commanditem as TSCommandGroup;
                     const groupSetting =
                     new Setting(containerEl)
-	    				.setName(group.settingstab? (group.settingstab.title? group.settingstab.title: group.name): group.name)
-	    				.setDesc(group.settingstab? (group.settingstab.desc? group.settingstab.desc: ""): "")
+	    				.setName(group.settingtab? (group.settingtab.title? group.settingtab.title: group.name): group.name)
+	    				.setDesc(group.settingtab? (group.settingtab.desc? group.settingtab.desc: ""): "")
                         .addButton((button) => button
                             .setIcon("trash-2")
                             .setTooltip("delete")
@@ -82,14 +80,18 @@ export class TSSettingTab extends PluginSettingTab {
                                 await this.plugin.saveData(this.plugin.settings)
                             })
                         });
-                    groupSetting.nameEl.addClass("textshortcuts-settings-item-group-name");
-                    groupSetting.descEl.addClass("textshortcuts-settings-item-group-desc");
+                    if (group.settingtab?.desc) {
+                        groupSetting.nameEl.addClass("textshortcuts-settings-item-group-name");
+                        groupSetting.descEl.addClass("textshortcuts-settings-item-group-desc");
+                    } else {
+                        groupSetting.nameEl.addClass("textshortcuts-settings-item-group-name-nodesc");
+                    }
                 } else {
                     let command = commanditem as TSCommand;
                     const commandSetting =
                     new Setting(containerEl)
-				    	.setName(command.settingstab? (command.settingstab.title? command.settingstab.title: command.name): command.name)
-				    	.setDesc(command.settingstab? (command.settingstab.desc? command.settingstab.desc: "") : "")
+				    	.setName(command.settingtab? (command.settingtab.title? command.settingtab.title: command.name): command.name)
+				    	.setDesc(command.settingtab? (command.settingtab.desc? command.settingtab.desc: "") : "")
                         .addButton((button) => button
                             .setIcon("trash-2")
                             .setTooltip("delete")
@@ -110,8 +112,12 @@ export class TSSettingTab extends PluginSettingTab {
                                 await this.plugin.saveData(this.plugin.settings)
                             })
                         });
-                    commandSetting.nameEl.addClass("textshortcuts-settings-item-command-name");
-                    commandSetting.descEl.addClass("textshortcuts-settings-item-command-desc");
+                        if (command.settingtab?.desc) {
+                            commandSetting.nameEl.addClass("textshortcuts-settings-item-command-name");
+                            commandSetting.descEl.addClass("textshortcuts-settings-item-command-desc");
+                        } else {
+                            commandSetting.nameEl.addClass("textshortcuts-settings-item-command-name-nodesc");
+                        }
                 }
             })
 		} else {

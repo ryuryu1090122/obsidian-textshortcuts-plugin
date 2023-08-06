@@ -18,15 +18,20 @@ export default class WithinGroupModal extends Modal {
     }
 
     createWithinGroupDisplay() {
-        const {containerEl} = this;
-        containerEl.empty();
         this.titleEl.setText(this.group.name);
+        this.titleEl.addClass("textshortcuts-modal-within-group-hedder");
+
+        const {contentEl} = this;
+        contentEl.empty();
+
+        contentEl.createEl("br");
 
         if (this.group.commands.length) {
             this.group.commands.forEach((command) => {
-                new Setting(containerEl)
-					.setName(command.settingstab? (command.settingstab.title? command.settingstab.title: command.name): command.name)
-					.setDesc(command.settingstab? (command.settingstab.desc? command.settingstab.desc: "") : "")
+                const commandSetting =
+                new Setting(contentEl)
+					.setName(command.settingtab? (command.settingtab.title? command.settingtab.title: command.name): command.name)
+					.setDesc(command.settingtab? (command.settingtab.desc? command.settingtab.desc: "") : "")
                     .addButton((button) => button
                         .setIcon("trash-2")
                         .setTooltip("delete")
@@ -47,6 +52,12 @@ export default class WithinGroupModal extends Modal {
                             await this.plugin.saveData(this.plugin.settings)
                         })
                     })
+                if (command.settingtab?.desc) {
+                    commandSetting.nameEl.addClass("textshortcuts-settings-item-command-name");
+                    commandSetting.descEl.addClass("textshortcuts-settings-item-command-desc");
+                } else {
+                    commandSetting.nameEl.addClass("textshortcuts-settings-item-command-name-nodesc");
+                }
             })
         }
     }

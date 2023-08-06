@@ -10,12 +10,8 @@ export type TSCommandGroup = {
 	id: string;
 	name: string;
 	enable: boolean;
-	settingstab?: TSSettingsTabProps;
+	settingtab?: TSSettingTabProps;
 	commands: TSCommand[];
-}
-
-export const isTSCommandGroup = (commanditem: any): commanditem is TSCommandGroup => {
-	return !!(commanditem as TSCommandGroup)?.commands
 }
 
 export type TSCommand = {
@@ -24,7 +20,7 @@ export type TSCommand = {
 	enable: boolean;
 	icon?: string;
 	props: TSCommandProperty
-	settingstab?: TSSettingsTabProps
+	settingtab?: TSSettingTabProps
 }
 
 export type TSCommandProperty = {
@@ -33,7 +29,7 @@ export type TSCommandProperty = {
 	linebreak?: true;
 }
 
-export type TSSettingsTabProps = {
+export type TSSettingTabProps = {
 	title?: string;
 	desc?: string;
 }
