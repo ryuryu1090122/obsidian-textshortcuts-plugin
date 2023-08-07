@@ -17,12 +17,49 @@ export default class GroupEditorModal extends Modal {
     }
 
     createNewGroupDisplay() {
-        const {containerEl} = this;
         this.titleEl.setText("Create New Group");
+        this.titleEl.addClass("textshortcuts-main-header-center");
+
+        const {contentEl} = this;
+        contentEl.empty();
+
+        contentEl.createEl("br");
+
+        const DEFAULT_TEXT = {
+            id: "",
+            name: "",
+            enable: true,
+            commands: []
+        }
+
+        const textArea = contentEl.createEl("textarea");
+        textArea.empty();
+        textArea.addClass("textshortcuts-modal-json-textarea");
+        textArea.rows = 8;
+        textArea.setText(JSON.stringify(DEFAULT_TEXT, null, 4));
+
+        contentEl.createEl("br");
+
+        const OKButton = contentEl.createEl("button", {"text": "OK", "cls": "textshortcuts-modal-command-editor-button"});
     }
 
     editGroupDisplay(group: TSCommandGroup) {
-        const {containerEl} = this;
-        this.titleEl.setText(group.name);
+        this.titleEl.setText("Edit " + group.name);
+        this.titleEl.addClass("textshortcuts-main-header-center");
+
+        const {contentEl} = this;
+        contentEl.empty();
+
+        contentEl.createEl("br");
+
+        const textArea = contentEl.createEl("textarea");
+        textArea.empty();
+        textArea.addClass("textshortcuts-modal-json-textarea");
+        textArea.rows = 12;
+        textArea.setText(JSON.stringify(group, null, 4));
+
+        contentEl.createEl("br");
+
+        const OKButton = contentEl.createEl("button", {"text": "OK", "cls": "textshortcuts-modal-command-editor-button"});
     }
 }

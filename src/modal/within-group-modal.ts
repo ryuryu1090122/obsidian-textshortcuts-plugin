@@ -19,7 +19,7 @@ export default class WithinGroupModal extends Modal {
 
     createWithinGroupDisplay() {
         this.titleEl.setText(this.group.name);
-        this.titleEl.addClass("textshortcuts-modal-within-group-hedder");
+        this.titleEl.addClass("textshortcuts-main-header-center");
 
         const {contentEl} = this;
         contentEl.empty();

@@ -19,7 +19,7 @@ export default class CommandEditorModal extends Modal {
 
     createNewCommandDisplay() {
         this.titleEl.setText("Create New Commands");
-        this.titleEl.addClass("textshortcuts-modal-command-editor-hedder");
+        this.titleEl.addClass("textshortcuts-main-header-center");
 
         const {contentEl} = this;
         contentEl.empty();
@@ -51,7 +51,7 @@ export default class CommandEditorModal extends Modal {
 
         const textArea = contentEl.createEl("textarea");
         textArea.empty();
-        textArea.addClass("textshortcuts-modal-command-editor-textarea");
+        textArea.addClass("textshortcuts-modal-json-textarea");
         textArea.rows = 12;
         textArea.setText(JSON.stringify(DEFAULT_TEXT, null, 4));
 
@@ -62,8 +62,8 @@ export default class CommandEditorModal extends Modal {
     }
 
     editCommandDisplay(command: TSCommand) {
-        this.titleEl.setText(command.name);
-        this.titleEl.addClass("textshortcuts-modal-command-editor-hedder");
+        this.titleEl.setText("Edit " + command.name);
+        this.titleEl.addClass("textshortcuts-main-header-center");
 
         const {contentEl} = this;
         contentEl.empty();
@@ -88,7 +88,7 @@ export default class CommandEditorModal extends Modal {
         
         const textArea = contentEl.createEl("textarea");
         textArea.empty();
-        textArea.addClass("textshortcuts-modal-command-editor-textarea");
+        textArea.addClass("textshortcuts-modal-json-textarea");
         textArea.rows = 12;
         textArea.setText(JSON.stringify(command, null, 4));
 

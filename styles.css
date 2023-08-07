@@ -1,5 +1,5 @@
-.textshortcuts-settings-main-header {
-    text-align: center !important;
+.textshortcuts-main-header-center {
+    /* text-align: center !important; */
     margin-bottom: 20px;
 }
 
@@ -103,30 +103,20 @@
     margin-left: 40px;
 }
 
-.textshortcuts-modal-command-editor-hedder {
-    text-align: center !important;
-    margin-bottom: 20px;
-}
-
-.textshortcuts-modal-command-editor-textarea {
+.textshortcuts-modal-json-textarea {
     width: 100%;
 
     font-size: 16px;
     line-height: 1.4;
     letter-spacing: 1px;
 
-    resize: none;
+    resize: vertical;
 }
 
 .textshortcuts-modal-command-editor-button {
     margin-top: 8px;
     width: 120px;
     float: right;
-}
-
-.textshortcuts-modal-within-group-hedder {
-    text-align: center !important;
-    margin-bottom: 20px;
 }
 
 .textshortcuts-modal-within-group-button {

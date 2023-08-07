@@ -72,6 +72,13 @@ export class TSSettingTab extends PluginSettingTab {
                                 new WithinGroupModal(this.plugin, group).open();
                             })
                         )
+                        .addButton((button) => button
+                            .setIcon("pencil")
+                            .setTooltip("edit")
+                            .onClick(async () => {
+                                new GroupEditorModal(this.plugin, group).open();
+                            })
+                        )
                         .addButton((button) => {
                             (group.enable) ? button.setIcon("power") : button.setIcon("power-off");
                             button.onClick(async () => {
