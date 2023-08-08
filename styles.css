@@ -110,7 +110,10 @@
     line-height: 1.4;
     letter-spacing: 1px;
 
+    white-space: nowrap;
     resize: vertical;
+
+    padding-bottom: 40px;
 }
 
 .textshortcuts-modal-command-editor-button {

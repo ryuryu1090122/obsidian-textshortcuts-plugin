@@ -40,7 +40,7 @@ export default class TSPlugin extends Plugin {
 					id: command.id,
 					name: command.name,
 					icon: command.icon,
-					editorCheckCallback: (checking, editor, ctx) => {
+					editorCheckCallback: (checking, editor) => {
 						if (command.enable) {
 							if (!checking) {
 								this.addBracket(editor, command.props);
