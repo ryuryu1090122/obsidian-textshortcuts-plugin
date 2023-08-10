@@ -2,6 +2,7 @@
     display: flex;
     align-items: center;
     height: 40px;
+    margin-bottom: 4px;
 }
 
 .textshortcuts-flex-default {
@@ -12,16 +13,26 @@
     flex: 1;
     margin-left: 40px;
     margin-right: 10px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .textshortcuts-flex-modal-rightitem {
-    flex: 3.6;
-    margin-right: 40px
+    flex: 3;
+    margin-right: 40px;
+
+    height: auto;
 }
 
 .textshortcuts-main-header-center {
     text-align: center !important;
     margin-bottom: 20px;
+}
+
+.textshortcuts-main-hr {
+    margin: 8px;
 }
 
 .textshortcuts-settings-item-group-name {
@@ -141,13 +152,8 @@
     text-align: right;
 }
 
-/* .textshortcuts-modal-command-editor-inputs {
-
-}
- */
-
 .textshortcuts-modal-command-editor-button {
-    margin-top: 8px;
+    margin-top: 16px;
     width: 120px;
     float: right;
 }

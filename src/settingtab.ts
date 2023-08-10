@@ -20,6 +20,10 @@ export class TSSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
 		containerEl.empty();
 
+        containerEl.createEl('h1', {text: this.plugin.manifest.name + " v" + this.plugin.manifest.version});
+
+        containerEl.createEl('br');
+
         new Setting(containerEl)
 			.setName("Create New Command")
 			.addButton((botton) => botton
@@ -43,13 +47,12 @@ export class TSSettingTab extends PluginSettingTab {
 			.addButton((botton) => botton
 				.setIcon("refresh-cw")
 				.onClick(async () => {
-                    (Platform.isMobile) ? await reloadPlugin(this.app, this.plugin, 400) : await reloadPlugin(this.app, this.plugin, 100);
+                    await reloadPlugin(this.app, this.plugin);
 					console.log("reload done");
 				}
         ))
 		
-		containerEl.createEl('br');
-		containerEl.createEl('h6', {text: 'Commands'});
+		containerEl.createEl('hr');
 
         if(this.plugin.commandList.length) {
             this.plugin.commandList.forEach(commanditem => {

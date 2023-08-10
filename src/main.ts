@@ -20,11 +20,10 @@ export default class TSPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.settings.commands.forEach((commanditem, i) => {
-			let index: number[] = [i]
 			if (isTSGroupSettings(commanditem)) {
 				this.commandList.push(new TSGroup(this, i, commanditem))
 			} else {
-				this.commandList.push(new TSCommand(this, index, commanditem))
+				this.commandList.push(new TSCommand(this, i, commanditem))
 			}
 		})
 

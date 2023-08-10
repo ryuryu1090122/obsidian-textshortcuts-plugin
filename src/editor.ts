@@ -2,7 +2,7 @@ import { Editor } from "obsidian";
 import { TSCommandSettingsProperty } from "./settings";
 
 
-export function addBracket(editor: Editor, props: TSCommandSettingsProperty): void {
+export function inputText(editor: Editor, props: TSCommandSettingsProperty): void {
     let from = editor.getCursor("from");
     let to = editor.getCursor("to");
 
@@ -13,7 +13,7 @@ export function addBracket(editor: Editor, props: TSCommandSettingsProperty): vo
             editor.setCursor({line: from.line, ch: from.ch + str.length});
             break;
         }
-        case "bracket" : {
+        case "paired" : {
             let bra = props.value[0];
             let ket = props.value[1];
 

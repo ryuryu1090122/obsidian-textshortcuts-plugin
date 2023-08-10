@@ -22,7 +22,7 @@ export type TSCommandSettings = {
 }
 
 export type TSCommandSettingsProperty = {
-	type: "single" | "bracket";
+	type: "single" | "paired";
 	value: string[];
-	linebreak?: true;
+	linebreak: boolean;
 }

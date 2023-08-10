@@ -1,8 +1,8 @@
 import { Command, Setting } from "obsidian";
-import { TSCommandSettings, TSGroupSettings } from "./settings";
+import { TSCommandSettings, TSCommandSettingsProperty, TSGroupSettings } from "./settings";
 import CommandEditorModal from "./modal/comand-editor-modal";
 import TSPlugin from "./main";
-import { addBracket } from "./editor";
+import { inputText } from "./editor";
 import WithinGroupModal from "./modal/within-group-modal";
 import GroupEditorModal from "./modal/group-editor-modal";
 
@@ -18,11 +18,11 @@ import GroupEditorModal from "./modal/group-editor-modal";
 
 export class TSCommand {
     private plugin: TSPlugin;
-    private index: number[];
+    private index: number;
     private settings: TSCommandSettings;
     private parent: TSGroup | null;
 
-    constructor(plugin: TSPlugin, index: number[], settings: TSCommandSettings, parent?: TSGroup | null) {
+    constructor(plugin: TSPlugin, index: number, settings: TSCommandSettings, parent?: TSGroup | null) {
         this.plugin = plugin;
         this.index = index;
         this.settings = settings
@@ -32,17 +32,77 @@ export class TSCommand {
     get name(): string {
         return this.settings.name
     }
+    set name(name: string) {
+        this.settings.name = name;
+    }
+
+    get desc(): string | undefined {
+        return this.settings.desc
+    }
+    set desc(desc: string | undefined) {
+        this.settings.desc = desc;
+    }
+
+    get icon(): string | undefined {
+        return this.settings.icon
+    }
+    set icon(icon: string | undefined) {
+        this.settings.icon = icon;
+    }
+
+    get type(): "single" | "paired" {
+        return this.settings.props.type
+    }
+    set type(type: "single" | "paired") {
+        this.settings.props.type = type;
+    }
+
+    get value(): string[] {
+        return this.settings.props.value
+    }
+    set value(value: string[]) {
+        this.settings.props.value = value;
+    }
+
+    get linebreak(): boolean {
+        return this.settings.props.linebreak
+    }
+    set linebreak(linebreak: boolean) {
+        this.settings.props.linebreak = linebreak;
+    }
+
+    get parentGroup(): TSGroup | null {
+        return this.parent
+    }
+
+    migrate(index?: number) {
+        if (this.parent) {
+            let setting = (this.plugin.settings.commands[this.parent.index] as TSGroupSettings).commands.splice(this.index, 1)[0];
+            if (index !== undefined) {
+                (this.plugin.settings.commands[index] as TSGroupSettings).commands.push(setting);
+            } else {
+                this.plugin.settings.commands.push(setting);
+            }
+        } else {
+            let setting = (this.plugin.settings.commands.splice(this.index, 1)[0] as TSCommandSettings);
+            if (index !== undefined) {
+                (this.plugin.settings.commands[index] as TSGroupSettings).commands.push(setting);
+            } else {
+                this.plugin.settings.commands.push(setting);
+            }
+        }
+    }
 
     createCommand(): Command {
-        let id = "textshortcuts-" + this.index.join("-")
+        let id = this.parent? "textshortcuts-" + [this.parent.index, this.index].join("-"): "textshortcuts-" + [this.index].join("-");
         return {
             id: id,
             name: this.settings.name,
             icon: this.settings.icon? this.settings.icon: undefined,
             editorCheckCallback: ((checking, editor) => {
-                if (parent? (this.settings.enable && this.parent?.enable): this.settings.enable) {
+                if ((!this.parent || this.settings.enable) && (!this.parent || this.parent.enable)) {
                     if (!checking) {
-                        addBracket(editor, this.settings.props);
+                        inputText(editor, this.settings.props);
                     }
                     return true;
                 }
@@ -88,20 +148,18 @@ export class TSCommand {
 
 export class TSGroup {
     private plugin: TSPlugin;
-    private index: number;
+    private mIndex: number;
     private settings: TSGroupSettings;
     private commands: TSCommand[];
 
     constructor(plugin: TSPlugin, index: number, settings: TSGroupSettings) {
         this.plugin = plugin;
-        this.index = index;
+        this.mIndex = index;
         this.settings = settings
 
         this.commands = []
         settings.commands.forEach((_command, i) => {
-            let commandIndex = [index];
-            commandIndex.push(i);
-            this.commands.push(new TSCommand(plugin, commandIndex, settings.commands[i], this))
+            this.commands.push(new TSCommand(plugin, i, settings.commands[i], this))
         })
     }
 
@@ -111,6 +169,14 @@ export class TSGroup {
 
     get name(): string {
         return this.settings.name
+    }
+
+    get desc(): string | undefined {
+        return this.settings.desc
+    }
+
+    get index(): number {
+        return this.mIndex
     }
 
     static isTSGroup(commanditem: TSCommand | TSGroup): commanditem is TSGroup {

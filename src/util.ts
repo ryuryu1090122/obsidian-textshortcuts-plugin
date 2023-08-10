@@ -1,4 +1,4 @@
-import { App } from "obsidian";
+import { App, Platform } from "obsidian";
 import { TSCommandSettings, TSGroupSettings } from "./settings";
 import TSPlugin from "./main";
 
@@ -6,10 +6,10 @@ export async function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function reloadPlugin(app: App, plugin: TSPlugin, sleepTime: number) {
+export async function reloadPlugin(app: App, plugin: TSPlugin) {
     await (app as any).plugins.disablePlugin(plugin.manifest.id);
     await (app as any).plugins.enablePlugin(plugin.manifest.id);
-    await sleep(sleepTime);
+    Platform.isMobile? await sleep(400): await sleep(100);
     (app as any).setting.openTabById(plugin.manifest.id).display();
 }
 

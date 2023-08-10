@@ -12,8 +12,9 @@ export const DEFAULT_COMMANDS: (TSCommandSettings | TSGroupSettings)[] = [
                 name:"Example Command 1",
                 enable: true,
                 props: {
-                    type: "bracket",
-                    value: ["<example>", "</example>"]
+                    type: "paired",
+                    value: ["<example>", "</example>"],
+                    linebreak: false
                 }
             }
         ]
@@ -24,7 +25,8 @@ export const DEFAULT_COMMANDS: (TSCommandSettings | TSGroupSettings)[] = [
         enable: true,
         props: {
             type: "single",
-            value: ["\\example!"]
+            value: ["\\example!"],
+            linebreak: true
         }
     }
 ]
