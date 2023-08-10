@@ -1,5 +1,5 @@
 import { App } from "obsidian";
-import { TSCommand, TSCommandGroup } from "./types";
+import { TSCommandSettings, TSGroupSettings } from "./settings";
 import TSPlugin from "./main";
 
 export async function sleep(ms: number) {
@@ -13,19 +13,18 @@ export async function reloadPlugin(app: App, plugin: TSPlugin, sleepTime: number
     (app as any).setting.openTabById(plugin.manifest.id).display();
 }
 
-export function isTSCommandGroup(commanditem: TSCommand | TSCommandGroup): commanditem is TSCommandGroup {
-    return (commanditem as TSCommandGroup).commands !== undefined;
+export function isTSGroupSettings(commanditem: TSCommandSettings | TSGroupSettings): commanditem is TSGroupSettings {
+    return (commanditem as TSGroupSettings).commands !== undefined;
 }
 
-export function getParentGroup(command: TSCommand, commands: (TSCommand | TSCommandGroup)[]): null | TSCommandGroup {
-    commands.forEach(mCommanditem => {
-        if (isTSCommandGroup(mCommanditem)) {
-            mCommanditem.commands.forEach(mCommand => {
-                if (mCommand.id === command.id) {
-                    return mCommanditem;
-                }
-            })
+export function getSettingsByIndex(plugin: TSPlugin, index: number[]): TSCommandSettings | TSGroupSettings {
+    let result: TSCommandSettings | TSGroupSettings = plugin.settings.commands[index.shift() as number];
+
+    index.forEach(i => {
+        if (isTSGroupSettings(result)) {
+            result = result.commands[i]
         }
     })
-    return null;
+
+    return result
 }

@@ -1,16 +1,15 @@
 import { Modal, Setting } from "obsidian";
 import TSPlugin from "../main";
-import { TSCommand } from "../types";
-import { getParentGroup, isTSCommandGroup } from "../util";
+import { TSCommand } from "src/textshortcuts";
 
 export default class CommandEditorModal extends Modal {
     plugin: TSPlugin;
-    command: null | TSCommand;
+    command: TSCommand | null;
 
-    constructor(plugin: TSPlugin, commanditem?: TSCommand) {
+    constructor(plugin: TSPlugin, command?: TSCommand) {
         super(plugin.app);
         this.plugin = plugin;
-        this.command = commanditem? commanditem: null;
+        this.command = command || null;
     }
 
     onOpen() {
@@ -32,30 +31,12 @@ export default class CommandEditorModal extends Modal {
             .setName("Parent Group")
             .addDropdown((dropdown) => {
                 dropdown.addOption("--", "----");
-                this.plugin.settings.commands.forEach(commanditem => {
-                    if (isTSCommandGroup(commanditem)) {
+                /* this.plugin.settings.commands.forEach(commanditem => {
+                    if (isTSGroupSettings(commanditem)) {
                         dropdown.addOption(commanditem.id, commanditem.name);
                     }
-                })
+                }) */
             })
-
-        const DEFAULT_TEXT = {
-            id: "",
-            name: "",
-            enable: true,
-            props: {
-                type: "",
-                value: [""],
-            }
-        }
-
-        const textArea = contentEl.createEl("textarea");
-        textArea.empty();
-        textArea.addClass("textshortcuts-modal-json-textarea");
-        textArea.rows = 12;
-        textArea.setText(JSON.stringify(DEFAULT_TEXT, null, 4));
-
-        contentEl.createEl("br");
 
         const OKButton = contentEl.createEl("button", {"text": "OK", "cls": "textshortcuts-modal-command-editor-button"});
 
@@ -70,30 +51,18 @@ export default class CommandEditorModal extends Modal {
 
         contentEl.createEl("br");
 
-        const settingDiv = contentEl.createDiv();
+        let label1 = createEl("label", {"text": "name : ","cls": "textshortcuts-flex-default textshortcuts-flex-modal-leftitem textshortcuts-modal-command-editor-labels"})
+        let input1 = createEl("input", {"type": "text", "placeholder": "name", "cls": "textshortcuts-flex-default textshortcuts-flex-modal-rightitem"})
+        let div1 = contentEl.createDiv({"cls": "textshortcuts-flex-container-1"})
+        div1.appendChild(label1);
+        div1.appendChild(input1)
 
-        new Setting(settingDiv)
-            .setName("Parent Group")
-            .addDropdown((dropdown) => {
-                dropdown.addOption("--", "----");
-                this.plugin.settings.commands.forEach(commanditem => {
-                    if (isTSCommandGroup(commanditem)) {
-                        dropdown.addOption(commanditem.id, commanditem.name);
-                    }
-                    const parentGroup = getParentGroup(command, this.plugin.settings.commands);
-                    const groupId = parentGroup?.id ?? "--";
-                    dropdown.setValue(groupId);
-                })
-            })
-        
-        const textArea = contentEl.createEl("textarea");
-        textArea.empty();
-        textArea.addClass("textshortcuts-modal-json-textarea");
-        textArea.rows = 12;
-        textArea.setText(JSON.stringify(command, null, 4));
-
-        contentEl.createEl("br");
-
+        let label2 = createEl("label", {"text": "description : ","cls": "textshortcuts-flex-default textshortcuts-flex-modal-leftitem textshortcuts-modal-command-editor-labels"})
+        let input2 = createEl("input", {"type": "text", "placeholder": "name", "cls": "textshortcuts-flex-default textshortcuts-flex-modal-rightitem"})
+        let div2 = contentEl.createDiv({"cls": "textshortcuts-flex-container-1"})
+        div2.appendChild(label2);
+        div2.appendChild(input2)
+;
         const OKButton = contentEl.createEl("button", {"text": "OK", "cls": "textshortcuts-modal-command-editor-button"});
     }
 }

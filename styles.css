@@ -1,5 +1,26 @@
+.textshortcuts-flex-container-1 {
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+.textshortcuts-flex-default {
+    padding: 10px;
+}
+
+.textshortcuts-flex-modal-leftitem {
+    flex: 1;
+    margin-left: 40px;
+    margin-right: 10px;
+}
+
+.textshortcuts-flex-modal-rightitem {
+    flex: 3.6;
+    margin-right: 40px
+}
+
 .textshortcuts-main-header-center {
-    /* text-align: center !important; */
+    text-align: center !important;
     margin-bottom: 20px;
 }
 
@@ -116,6 +137,15 @@
     padding-bottom: 40px;
 }
 
+.textshortcuts-modal-command-editor-labels {
+    text-align: right;
+}
+
+/* .textshortcuts-modal-command-editor-inputs {
+
+}
+ */
+
 .textshortcuts-modal-command-editor-button {
     margin-top: 8px;
     width: 120px;
@@ -125,5 +155,8 @@
 .textshortcuts-modal-within-group-button {
     margin-top: 8px;
     width: 120px;
-    float: right;
+}
+
+.textshortcuts-modal-within-group-button::before {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXBsdXMiPjxwYXRoIGQ9Ik01IDEyaDE0Ii8+PHBhdGggZD0iTTEyIDV2MTQiLz48L3N2Zz4=);
 }

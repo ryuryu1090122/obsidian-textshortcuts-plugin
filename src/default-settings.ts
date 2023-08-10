@@ -1,18 +1,14 @@
-import { TSCommand, TSGlobal, TSCommandGroup } from "./types";
+import { TSCommandSettings, TSGlobal, TSGroupSettings } from "./settings";
 
 export const DEFAULT_GLOBAL_SETTINGS: TSGlobal = {}
 
-export const DEFAULT_COMMANDS: (TSCommand | TSCommandGroup)[] = [
+export const DEFAULT_COMMANDS: (TSCommandSettings | TSGroupSettings)[] = [
     {
-        id: "example-command-group",
         name: "Example Command Group",
+        desc: "this is example group.",
         enable: true,
-        settingtab: {
-            desc: "this is example group."
-        },
         commands: [
             {
-                id: "example-command-1",
                 name:"Example Command 1",
                 enable: true,
                 props: {
@@ -23,15 +19,12 @@ export const DEFAULT_COMMANDS: (TSCommand | TSCommandGroup)[] = [
         ]
     },
     {
-        id: "example-command-2",
         name: "Example Command 2",
+        desc: "this is example command.",
         enable: true,
         props: {
             type: "single",
             value: ["\\example!"]
-        },
-        settingtab: {
-            desc: "this is example command."
         }
     }
 ]
