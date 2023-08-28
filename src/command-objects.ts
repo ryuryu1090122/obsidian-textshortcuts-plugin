@@ -1,10 +1,11 @@
-import { Command, Setting } from "obsidian";
+import { Command, Setting, SettingTab } from "obsidian";
 import { TSCommandSettings, TSCommandSettingsProperty, TSGroupSettings } from "./settings";
 import CommandEditorModal from "./modal/comand-editor-modal";
 import TSPlugin from "./main";
 import { inputText } from "./editor";
 import WithinGroupModal from "./modal/within-group-modal";
 import GroupEditorModal from "./modal/group-editor-modal";
+import { TSSettingTab } from "./settingtab";
 
 /* 
     id name rule
@@ -75,7 +76,12 @@ export class TSCommand {
         return this.parent
     }
 
+    /**
+     * Update and migrate the command to another group.
+     * @param index - index of the group to migrate to. If undefined, Simply update the command.
+     */
     migrate(index?: number) {
+        // 1. Get the TSSettings reference from plugin.settings.commands
         if (this.parent) {
             let setting = (this.plugin.settings.commands[this.parent.index] as TSGroupSettings).commands.splice(this.index, 1)[0];
             if (index !== undefined) {
@@ -110,7 +116,8 @@ export class TSCommand {
         }
     }
 
-    createCommandSetting(containerEl: HTMLElement): Setting {
+    // SettingTab
+    createCommandSetting(containerEl: HTMLElement, settingtab: TSSettingTab | WithinGroupModal): Setting {
         let item = new Setting(containerEl)
             .setName(this.settings.name)
             .addButton((button) => button
@@ -122,7 +129,7 @@ export class TSCommand {
                 .setIcon("pencil")
                 .setTooltip("edit")
                 .onClick(async () => {
-                    new CommandEditorModal(this.plugin, this).open();
+                    new CommandEditorModal(this.plugin, settingtab, this).open();
                 })
             )
             .addButton((button) => {
@@ -233,10 +240,11 @@ export class TSGroup {
             return item;
     }
 
-    createChildCommandsSetting(elem: HTMLElement): Setting[] {
+    // WithinGroupModal
+    createChildCommandsSetting(elem: HTMLElement, modal: WithinGroupModal): Setting[] {
         let setting: Setting[] = []
         this.commands.forEach(command => {
-            let item = command.createCommandSetting(elem);
+            let item = command.createCommandSetting(elem, modal);
             setting.push(item);
         })
 

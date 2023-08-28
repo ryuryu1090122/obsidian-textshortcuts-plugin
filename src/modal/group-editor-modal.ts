@@ -1,6 +1,6 @@
 import { Modal, Setting } from "obsidian";
 import TSPlugin from "../main";
-import { TSGroup } from "src/textshortcuts";
+import { TSGroup } from "src/command-objects";
 
 export default class GroupEditorModal extends Modal {
     plugin: TSPlugin;

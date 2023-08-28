@@ -1,6 +1,6 @@
 import { Modal, Setting } from "obsidian";
 import TSPlugin from "../main";
-import { TSGroup } from "src/textshortcuts";
+import { TSGroup } from "src/command-objects";
 
 export default class WithinGroupModal extends Modal {
     private readonly plugin: TSPlugin;
@@ -25,7 +25,7 @@ export default class WithinGroupModal extends Modal {
 
         contentEl.createEl("br");
 
-        this.group.createChildCommandsSetting(contentEl);
+        this.group.createChildCommandsSetting(contentEl, this);
 
         const addButton = contentEl.createEl("button", {"cls": "textshortcuts-modal-within-group-button"});
     }

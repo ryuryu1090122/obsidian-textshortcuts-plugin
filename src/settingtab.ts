@@ -4,7 +4,7 @@ import TSPlugin from "./main"
 import { reloadPlugin } from './util';
 import CommandEditorModal from './modal/comand-editor-modal';
 import GroupEditorModal from './modal/group-editor-modal';
-import { TSGroup } from './textshortcuts';
+import { TSGroup } from './command-objects';
 
 export class TSSettingTab extends PluginSettingTab {
 	plugin: TSPlugin;
@@ -29,7 +29,7 @@ export class TSSettingTab extends PluginSettingTab {
 			.addButton((botton) => botton
                 .setIcon("plus")
 				.onClick(async () => {
-                    new CommandEditorModal(this.plugin).open();
+                    new CommandEditorModal(this.plugin, this).open();
 				}
         ));
 
@@ -48,7 +48,6 @@ export class TSSettingTab extends PluginSettingTab {
 				.setIcon("refresh-cw")
 				.onClick(async () => {
                     await reloadPlugin(this.app, this.plugin);
-					console.log("reload done");
 				}
         ))
 		
@@ -59,9 +58,11 @@ export class TSSettingTab extends PluginSettingTab {
                 if(TSGroup.isTSGroup(commanditem)) {
                     commanditem.createGroupSetting(containerEl);
                 } else {
-                    commanditem.createCommandSetting(containerEl);
+                    commanditem.createCommandSetting(containerEl, this);
                 }
             })
         }
     }
+
+    close(): void {}
 }

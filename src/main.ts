@@ -4,7 +4,7 @@ import { TSSettings } from "./settings"
 import { isTSGroupSettings } from "./util"
 import { TSSettingTab } from "./settingtab"
 import { DEFAULT_COMMANDS, DEFAULT_GLOBAL_SETTINGS } from './default-settings';
-import { TSCommand, TSGroup } from './textshortcuts';
+import { TSCommand, TSGroup } from './command-objects';
 
 const DEFAULT_SETTINGS: TSSettings = {
 	global: DEFAULT_GLOBAL_SETTINGS,
@@ -62,8 +62,6 @@ export default class TSPlugin extends Plugin {
 			this.settings.commands = Object.assign(this.settings.commands, DEFAULT_COMMANDS);
 			this.saveSettings();
 		}
-
-		console.log("data : ", this.settings);
 	}
 
 	async saveSettings() {

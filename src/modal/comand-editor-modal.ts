@@ -1,16 +1,20 @@
 import { Modal } from "obsidian";
 import TSPlugin from "../main";
-import { TSCommand, TSGroup } from "src/textshortcuts";
+import { TSCommand, TSGroup } from "src/command-objects";
 import { reloadPlugin } from "src/util";
 import { TSCommandSettings, TSGroupSettings } from "src/settings";
+import { TSSettingTab } from "src/settingtab";
+import WithinGroupModal from "./within-group-modal";
 
 export default class CommandEditorModal extends Modal {
     plugin: TSPlugin;
     command: TSCommand | null;
+    modal: TSSettingTab | WithinGroupModal;
 
-    constructor(plugin: TSPlugin, command?: TSCommand) {
+    constructor(plugin: TSPlugin, modal: TSSettingTab | WithinGroupModal, command?: TSCommand) {
         super(plugin.app);
         this.plugin = plugin;
+        this.modal = modal;
         this.command = command || null;
     }
 
@@ -181,14 +185,19 @@ export default class CommandEditorModal extends Modal {
                 }
                 command.linebreak = JSON.parse(dropdown8.value);
 
+                // if parent group has changed
                 if (dropdown1FirstValue !== dropdown1.options.selectedIndex) {
                     let index = Number(dropdown1.options[dropdown1.selectedIndex].value);
-                    console.log("aaa", index);
-                    command.migrate(index);
+                    if (Boolean(index)) {
+                        command.migrate(index);
+                    } else {
+                        command.migrate();
+                    }
                 }
 
                 this.plugin.saveSettings();
                 this.close();
+                this.modal.close();
                 await reloadPlugin(this.app, this.plugin);
             })
 
